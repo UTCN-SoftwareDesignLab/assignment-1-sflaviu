@@ -1,5 +1,8 @@
 package database;
 
+import repository.security.RightsRolesRepository;
+import repository.security.RightsRolesRepositoryMySQL;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,14 +20,14 @@ import static database.Constants.getRolesRights;
  */
 public class Bootstrap {
 
-    //private static RightsRolesRepository rightsRolesRepository;
+    private static RightsRolesRepository rightsRolesRepository;
 
     public static void main(String[] args) throws SQLException {
         dropAll();
 
         bootstrapTables();
 
-        //bootstrapUserData();
+        bootstrapUserData();
     }
 
     private static void dropAll() throws SQLException {
@@ -37,6 +40,8 @@ public class Bootstrap {
             String[] dropStatements = {
                     "TRUNCATE `activity`;",
                     "DROP TABLE `activity`;",
+                    "TRUNCATE `user_role`;",
+                    "DROP TABLE  `user_role`;",
                     "TRUNCATE `role_right`;",
                     "DROP TABLE `role_right`;",
                     "TRUNCATE `account`;",
@@ -82,7 +87,7 @@ public class Bootstrap {
 
         System.out.println("Done table bootstrap");
     }
-/*
+
     private static void bootstrapUserData() throws SQLException {
         for (String schema : SCHEMAS) {
             System.out.println("Bootstrapping user data for " + schema);
@@ -125,5 +130,6 @@ public class Bootstrap {
 
     private static void bootstrapUserRoles() throws SQLException {
 
-    }*/
+    }
+
 }

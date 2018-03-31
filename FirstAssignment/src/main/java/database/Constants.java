@@ -25,8 +25,9 @@ public class Constants {
         public static final String ROLE_RIGHT = "role_right";
         public static final String USER="user";
         public static final String ACTIVITY="activity";
+        public static final String USER_ROLE = "user_role";
 
-        public static final String[] ORDERED_TABLES_FOR_CREATION = new String[]{CLIENT,ACCOUNT, ROLE, RIGHT, ROLE_RIGHT, USER, ACTIVITY};
+        public static final String[] ORDERED_TABLES_FOR_CREATION = new String[]{CLIENT,ACCOUNT, ROLE, RIGHT, ROLE_RIGHT, USER, ACTIVITY,USER_ROLE};
     }
 
     public static class Roles {
@@ -49,8 +50,11 @@ public class Constants {
         public static final String DELETE_ACCOUNT = "delete_account";
         public static final String UPDATE_ACCOUNT = "update_account";
 
+        public static final String TRANSFER_MONEY = "transfer_money";
+        public static final String PROCESS_BILL = "process_bill";
 
-        public static final String[] RIGHTS = new String[]{CREATE_USER, DELETE_USER, UPDATE_USER,CREATE_CLIENT,DELETE_CLIENT,UPDATE_CLIENT,CREATE_ACCOUNT,DELETE_ACCOUNT,UPDATE_ACCOUNT};
+
+        public static final String[] RIGHTS = new String[]{CREATE_USER, DELETE_USER, UPDATE_USER,CREATE_CLIENT,DELETE_CLIENT,UPDATE_CLIENT,CREATE_ACCOUNT,DELETE_ACCOUNT,UPDATE_ACCOUNT,TRANSFER_MONEY,PROCESS_BILL};
     }
 
     public static Map<String, List<String>> getRolesRights() {
@@ -60,7 +64,7 @@ public class Constants {
         }
         ROLES_RIGHTS.get(ADMINISTRATOR).addAll(Arrays.asList(RIGHTS));
 
-        ROLES_RIGHTS.get(EMPLOYEE).addAll(Arrays.asList(CREATE_ACCOUNT,DELETE_ACCOUNT,UPDATE_ACCOUNT,CREATE_CLIENT,DELETE_CLIENT,UPDATE_CLIENT));
+        ROLES_RIGHTS.get(EMPLOYEE).addAll(Arrays.asList(CREATE_ACCOUNT,DELETE_ACCOUNT,UPDATE_ACCOUNT,CREATE_CLIENT,DELETE_CLIENT,UPDATE_CLIENT,TRANSFER_MONEY,PROCESS_BILL));
 
 
         return ROLES_RIGHTS;

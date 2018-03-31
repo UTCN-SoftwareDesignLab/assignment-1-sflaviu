@@ -109,6 +109,25 @@ public class SQLTableCreationFactory {
                         "    REFERENCES `account` (id)" +
                         "    ON DELETE CASCADE" +
                         "    ON UPDATE CASCADE);";
+            case USER_ROLE:
+                return "\tCREATE TABLE IF NOT EXISTS user_role (" +
+                        "  id INT NOT NULL AUTO_INCREMENT," +
+                        "  user_id INT NOT NULL," +
+                        "  role_id INT NOT NULL," +
+                        "  PRIMARY KEY (id)," +
+                        "  UNIQUE INDEX id_UNIQUE (id ASC)," +
+                        "  INDEX user_id_idx (user_id ASC)," +
+                        "  INDEX role_id_idx (role_id ASC)," +
+                        "  CONSTRAINT user_fkid" +
+                        "    FOREIGN KEY (user_id)" +
+                        "    REFERENCES user (id)" +
+                        "    ON DELETE CASCADE" +
+                        "    ON UPDATE CASCADE," +
+                        "  CONSTRAINT role_fkid" +
+                        "    FOREIGN KEY (role_id)" +
+                        "    REFERENCES role (id)" +
+                        "    ON DELETE CASCADE" +
+                        "    ON UPDATE CASCADE);";
 
 
             default:
