@@ -3,12 +3,12 @@ package repository.user;
 import model.User;
 import model.builder.UserBuilder;
 import model.validation.Notification;
+import repository.EntityNotFoundException;
 import repository.security.RightsRolesRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import static database.Constants.Tables.USER;
 
 /**
@@ -25,15 +25,15 @@ public class UserRepositoryMySQL implements UserRepository {
         this.rightsRolesRepository = rightsRolesRepository;
     }
 
-    public User findById(Long id) {
+    public User findById(Long id) throws EntityNotFoundException {
         Statement statement;
+        User user=null;
+
         try {
             statement = connection.createStatement();
-            String fetchRoleSql = "Select * from " + USER + " where `id`=\'" + id + "\'";
+            String fetchRoleSql = "Select * from " + USER +  " where `id`=\'"  + id + "\'";
             ResultSet userResultSet = statement.executeQuery(fetchRoleSql);
-            userResultSet.next();
 
-            User user=null;
             if (userResultSet.next()) {
                 user = new UserBuilder()
                         .setId(userResultSet.getLong("id"))
@@ -42,22 +42,23 @@ public class UserRepositoryMySQL implements UserRepository {
                         .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
                         .build();
             }
-            return user;
-
+            else
+                throw new EntityNotFoundException(id,User.class.getSimpleName());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return user;
     }
     @Override
     public List<User> findAll() {
+        List<User> users=null;
         try {
             Statement statement = connection.createStatement();
             String fetchUserSql = "Select * from " + USER;
             ResultSet userResultSet = statement.executeQuery(fetchUserSql);
 
-            List<User> users=new ArrayList<>();
+            users=new ArrayList<>();
             while (userResultSet.next()) {
                 User user = new UserBuilder()
                         .setId(userResultSet.getLong("id"))
@@ -67,13 +68,10 @@ public class UserRepositoryMySQL implements UserRepository {
                         .build();
                 users.add(user);
             }
-            return users;
-
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
+        return users;
     }
 
     @Override
@@ -106,7 +104,7 @@ public class UserRepositoryMySQL implements UserRepository {
     public boolean save(User user) {
         try {
             PreparedStatement insertUserStatement = connection
-                    .prepareStatement("INSERT INTO user values (null, ?, ?)");
+                    .prepareStatement("INSERT INTO " +USER+" values (null, ?, ?)");
             insertUserStatement.setString(1, user.getUserName());
             insertUserStatement.setString(2, user.getPassword());
             insertUserStatement.executeUpdate();
@@ -124,6 +122,38 @@ public class UserRepositoryMySQL implements UserRepository {
             return false;
         }
 
+    }
+
+    @Override
+    public boolean update(Long id, User user) {
+        try {
+            PreparedStatement updateClientStatement = connection
+                    .prepareStatement("UPDATE "+ USER+" SET username= ?,password= ? WHERE id= ?");
+            updateClientStatement.setString(1, user.getUserName());
+            updateClientStatement.setString(2, user.getPassword());
+            updateClientStatement.setLong(3, id);
+            updateClientStatement.executeUpdate();
+
+            user.setId(id);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean remove(Long id) {
+        try {
+            PreparedStatement removeClientStatement = connection
+                    .prepareStatement("DELETE FROM " + USER + " WHERE id= ?");
+            removeClientStatement.setLong(1, id);
+            removeClientStatement.executeUpdate();
+            return true;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

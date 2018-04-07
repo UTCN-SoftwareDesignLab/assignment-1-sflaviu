@@ -37,6 +37,13 @@ public class Constants {
         public static final String[] ROLES = new String[]{ADMINISTRATOR, EMPLOYEE};
     }
 
+    public static class Operations
+    {
+        public static final String CRUD_CLIENT = "crud_client";
+        public static final String CRUD_EMPLOYEE = "crud_employee";
+        public static final String PAY_BILLS = "pay_bills";
+        public static final String TRANSFER_MONEY= "transfer_money";
+    }
     public static class Rights {
         public static final String CREATE_USER = "create_user";
         public static final String DELETE_USER = "delete_user";

@@ -4,7 +4,6 @@ import java.sql.Date;
 
 public class Account {
     private Long id;
-    private Client owner;
     private Date creation;
     private int balance;
     private String type;
@@ -15,14 +14,6 @@ public class Account {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Client getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Client owner) {
-        this.owner = owner;
     }
 
     public Date getCreation() {

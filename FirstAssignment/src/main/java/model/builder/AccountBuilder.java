@@ -5,7 +5,7 @@ import model.Client;
 
 import java.sql.Date;
 
-public class AccountBuilder {
+public class AccountBuilder implements Builder<Account> {
 
     private Account account;
 
@@ -15,11 +15,6 @@ public class AccountBuilder {
 
     public AccountBuilder setId(Long id) {
         account.setId(id);
-        return this;
-    }
-
-    public AccountBuilder setOwner(Client owner){
-        account.setOwner(owner);
         return this;
     }
 

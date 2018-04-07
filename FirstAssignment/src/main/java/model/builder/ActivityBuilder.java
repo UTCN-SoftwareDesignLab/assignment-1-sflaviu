@@ -7,7 +7,7 @@ import model.User;
 
 import java.sql.Date;
 
-public class ActivityBuilder {
+public class ActivityBuilder implements Builder<Activity>{
 
     private Activity activity;
 

@@ -17,7 +17,8 @@ public class SQLTableCreationFactory {
                         "  card_nr varchar(500) NOT NULL," +
                         "  cnp char(10) NOT NULL," +
                         "  PRIMARY KEY (id)," +
-                        "  UNIQUE KEY id_UNIQUE (id)" +
+                        "  UNIQUE KEY id_UNIQUE (id)," +
+                        "  UNIQUE INDEX cnp_UNIQUE (cnp ASC) "+
                         ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
 
             case USER:
@@ -25,15 +26,9 @@ public class SQLTableCreationFactory {
                         "  id INT NOT NULL AUTO_INCREMENT," +
                         "  username VARCHAR(200) NOT NULL," +
                         "  password VARCHAR(64) NOT NULL," +
-                        "  rol_id INT NOT NULL,"+
                         "  PRIMARY KEY (id)," +
                         "  UNIQUE INDEX id_UNIQUE (id ASC)," +
-                        "  UNIQUE INDEX username_UNIQUE (username ASC),"+
-                        "  CONSTRAINT rol_id" +
-                        "    FOREIGN KEY (rol_id)" +
-                        "    REFERENCES `role` (id)" +
-                        "    ON DELETE CASCADE" +
-                        "    ON UPDATE CASCADE);";
+                        "  UNIQUE INDEX username_UNIQUE (username ASC));";
 
             case ROLE:
                 return "  CREATE TABLE IF NOT EXISTS role (" +

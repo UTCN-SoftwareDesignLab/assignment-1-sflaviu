@@ -1,5 +1,8 @@
 package model.validation;
 
+import java.util.List;
+
 public interface Validator {
-    public boolean validate();
+   boolean validate();
+   List<String> getErrors();
 }

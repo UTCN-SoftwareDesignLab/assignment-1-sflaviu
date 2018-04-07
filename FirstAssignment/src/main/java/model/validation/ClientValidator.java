@@ -26,7 +26,7 @@ public class ClientValidator implements Validator {
     {
         if(cardNr.length()!=16)
             errors.add("Card number must have 16 characters!");
-        if (cardNr.matches("[0-9]+"))
+        if (!cardNr.matches("[0-9]+"))
             errors.add("Card number must only contain numbers");
     }
 
@@ -34,7 +34,7 @@ public class ClientValidator implements Validator {
     {
         if(cnp.length()!=10)
             errors.add("Personal numerical code must contain 10 characters!");
-        if (cnp.matches("[0-9]+"))
+        if (!cnp.matches("[0-9]+"))
             errors.add("Personal numerical code must contain only digits");
     }
 

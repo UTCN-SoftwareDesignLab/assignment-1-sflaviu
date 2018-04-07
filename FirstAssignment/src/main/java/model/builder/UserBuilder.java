@@ -5,7 +5,7 @@ import model.User;
 
 import java.util.List;
 
-public class UserBuilder {
+public class UserBuilder implements Builder<User>{
 
     private User user;
 

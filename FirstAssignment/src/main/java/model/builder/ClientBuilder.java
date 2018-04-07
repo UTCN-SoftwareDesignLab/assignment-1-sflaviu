@@ -5,7 +5,7 @@ import model.Client;
 
 import java.util.List;
 
-public class ClientBuilder {
+public class ClientBuilder implements Builder<Client> {
 
     private Client client;
 

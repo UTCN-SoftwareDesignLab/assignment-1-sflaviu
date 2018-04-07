@@ -1,20 +1,18 @@
-package repository.activity;
+package service.activity;
 
 import model.Activity;
+import model.User;
 import repository.EntityNotFoundException;
 
 import java.util.List;
 
-public interface ActivityRepository {
+public interface ActivityService {
 
     List<Activity> findAll();
 
     Activity findById(Long id) throws EntityNotFoundException;
 
-    List<Activity> findByPerformerId(Long userId);
-
     boolean save(Activity activity);
 
-    void removeAll();
-
+    List<Activity> findByPerformer(User performer);
 }

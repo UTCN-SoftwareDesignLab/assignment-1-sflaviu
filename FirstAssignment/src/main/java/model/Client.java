@@ -6,9 +6,9 @@ public class Client {
 
     private Long id;
     private String name;
-    private String address;
-    private String cardNr;
     private String cnp;
+    private String cardNr;
+    private String address;
     private List<Account> accounts;
 
 
