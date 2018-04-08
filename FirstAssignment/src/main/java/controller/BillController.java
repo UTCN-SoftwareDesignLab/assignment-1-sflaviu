@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class BillController implements Controller {
+public class BillController extends TableBasedController{
 
     private BillView billView;
     private HashMap<String,Controller> nextControllers;
@@ -85,7 +85,7 @@ public class BillController implements Controller {
             Notification<Boolean> inputNotification=checkInput();
             if(!inputNotification.hasErrors())
             {
-                Notification<Boolean> paymentNotification = accountService.payBill(accountId,Integer.parseInt(billView.getTxtSum()));
+                Notification<Boolean> paymentNotification = accountService.subtract(accountId,Integer.parseInt(billView.getTxtSum()));
                 if (paymentNotification.hasErrors()) {
                     JOptionPane.showMessageDialog(billView.getContentPane(), paymentNotification.getFormattedErrors());
                 } else {
@@ -139,39 +139,8 @@ public class BillController implements Controller {
 
     private void populateClientsTables(List<Client> clientsList)
     {
-        String[][] tableData;
 
-        ArrayList<String> firstRow=new ArrayList<>();
-
-        int row=0;
-        for(Field f: clientsList.get(0).getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if(!Collection.class.isAssignableFrom(f.getType()))
-            {
-                firstRow.add(f.getName());
-                row++;
-            }
-        }
-        tableData=new String[clientsList.size()][row];
-
-        int column;
-        row=0;
-        for(Client c:clientsList) {
-            column = 0;
-            for (Field f : c.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                if(!Collection.class.isAssignableFrom(f.getType()))
-                    try {
-                        tableData[row][column] = f.get(c).toString();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                column++;
-            }
-            row++;
-        }
-
-        JTable clientsTable=new JTable(tableData,firstRow.toArray());
+        JTable clientsTable=populateTable(clientsList);
 
         clientsTable.getSelectionModel().addListSelectionListener(new ClientListSelectionListener());
 
@@ -180,39 +149,8 @@ public class BillController implements Controller {
 
     private void populateAccountsTables(List<Account> accountsList)
     {
-        String[][] tableData;
 
-        ArrayList<String> firstRow=new ArrayList<>();
-
-        int row=0;
-        for(Field f: accountsList.get(0).getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if(!Collection.class.isAssignableFrom(f.getType()))
-            {
-                firstRow.add(f.getName());
-                row++;
-            }
-        }
-        tableData=new String[accountsList.size()][row];
-
-        int column;
-        row=0;
-        for(Account c:accountsList) {
-            column = 0;
-            for (Field f : c.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                if(!Collection.class.isAssignableFrom(f.getType()))
-                    try {
-                        tableData[row][column] = f.get(c).toString();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                column++;
-            }
-            row++;
-        }
-
-        JTable accountsTable=new JTable(tableData,firstRow.toArray());
+        JTable accountsTable=populateTable(accountsList);
 
         accountsTable.getSelectionModel().addListSelectionListener(new AccountsListSelectionListener());
 

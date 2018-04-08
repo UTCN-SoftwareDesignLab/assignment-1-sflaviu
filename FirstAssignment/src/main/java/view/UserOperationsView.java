@@ -23,7 +23,7 @@ public class UserOperationsView extends JFrame {
     public UserOperationsView() {
         setTitle("User operations");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 624, 228);
+        setBounds(100, 100, 624, 261);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -31,7 +31,7 @@ public class UserOperationsView extends JFrame {
 
         btnsUserOperations=new ArrayList<>();
 
-        JButton btnCrudClients = new JButton("CRUD clients");
+        JButton btnCrudClients = new JButton("Manage clients");
         btnCrudClients.setBounds(17, 52, 185, 63);
         btnCrudClients.setActionCommand(CRUD_CLIENT);
         btnsUserOperations.add(btnCrudClients);
@@ -48,6 +48,12 @@ public class UserOperationsView extends JFrame {
         btnPayBills.setActionCommand(PAY_BILLS);
         btnsUserOperations.add(btnPayBills);
         contentPane.add(btnPayBills);
+
+        JButton btnManageAccounts = new JButton("Manage accounts");
+        btnManageAccounts.setBounds(189, 132, 240, 63);
+        btnManageAccounts.setActionCommand(CRUD_ACCOUNTS);
+        btnsUserOperations.add(btnManageAccounts);
+        contentPane.add(btnManageAccounts);
     }
 
     public void setBtnListeners(ActionListener al)

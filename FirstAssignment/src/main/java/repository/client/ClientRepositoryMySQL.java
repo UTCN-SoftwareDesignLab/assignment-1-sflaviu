@@ -34,13 +34,7 @@ public class ClientRepositoryMySQL implements ClientRepository {
             ResultSet clientResultSet = statement.executeQuery(fetchClientSql);
 
             if(clientResultSet.next()) {
-                client = new ClientBuilder()
-                        .setId(clientResultSet.getLong("id"))
-                        .setName(clientResultSet.getString("name"))
-                        .setAddress(clientResultSet.getString("address"))
-                        .setCardNr(clientResultSet.getString("card_nr"))
-                        .setCnp(clientResultSet.getString("cnp"))
-                        .build();
+                client =createClient(clientResultSet);
             }
             else
             {
@@ -67,14 +61,7 @@ public class ClientRepositoryMySQL implements ClientRepository {
 
             clients=new ArrayList<>();
             while (clientResultSet.next()) {
-                Client client = new ClientBuilder()
-                        .setId(clientResultSet.getLong("id"))
-                        .setName(clientResultSet.getString("name"))
-                        .setAddress(clientResultSet.getString("address"))
-                        .setCardNr(clientResultSet.getString("card_nr"))
-                        .setCnp(clientResultSet.getString("cnp"))
-                        .setAccounts(accountRepository.findAccountsByOwnerId(clientResultSet.getLong("id")))
-                        .build();
+                Client client = createClient(clientResultSet);
                 clients.add(client);
             }
 
@@ -88,36 +75,27 @@ public class ClientRepositoryMySQL implements ClientRepository {
 
 
     @Override
-    public Notification<Client> findByCnp(String cnp){
+    public Client findByCnp(String cnp) throws EntityNotFoundException{
         Statement statement;
 
-        Notification<Client> findByCnpNotification=new Notification<>();
+        Client client;
         try {
             statement = connection.createStatement();
             String fetchRoleSql = "Select * from " + CLIENT + " where `cnp`=\'" + cnp + "\'";
             ResultSet clientResultSet = statement.executeQuery(fetchRoleSql);
 
             if(clientResultSet.next()) {
-                findByCnpNotification.setResult(new ClientBuilder()
-                        .setId(clientResultSet.getLong("id"))
-                        .setName(clientResultSet.getString("name"))
-                        .setAddress(clientResultSet.getString("address"))
-                        .setCardNr(clientResultSet.getString("card_nr"))
-                        .setCnp(clientResultSet.getString("cnp"))
-                        .setAccounts(accountRepository.findAccountsByOwnerId(clientResultSet.getLong("id")))
-                        .build());
-                return findByCnpNotification;
+                client=createClient(clientResultSet);
+                return client;
             }
             else {
-                findByCnpNotification.addError("No client found with this cnp!");
-                return findByCnpNotification;
+                throw new EntityNotFoundException(Long.parseLong(cnp),Client.class.getSimpleName());
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            throw new EntityNotFoundException(Long.parseLong(cnp),Client.class.getSimpleName());
 
-        return null;
+        }
     }
 
 
@@ -195,5 +173,17 @@ public class ClientRepositoryMySQL implements ClientRepository {
         }
     }
 
+    private Client createClient(ResultSet clientResultSet) throws SQLException
+    {
+        Client client = new ClientBuilder()
+                .setId(clientResultSet.getLong("id"))
+                .setName(clientResultSet.getString("name"))
+                .setAddress(clientResultSet.getString("address"))
+                .setCardNr(clientResultSet.getString("card_nr"))
+                .setCnp(clientResultSet.getString("cnp"))
+                .setAccounts(accountRepository.findAccountsByOwnerId(clientResultSet.getLong("id")))
+                .build();
+        return client;
+    }
 
 }

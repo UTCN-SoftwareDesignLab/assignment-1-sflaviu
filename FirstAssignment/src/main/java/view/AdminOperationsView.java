@@ -48,10 +48,17 @@ public class AdminOperationsView extends JFrame {
         contentPane.add(btnPayBills);
 
         JButton btnManageEmployees = new JButton("Manage Employees");
-        btnManageEmployees.setBounds(197, 137, 213, 63);
+        btnManageEmployees.setBounds(319, 138, 213, 63);
         btnManageEmployees.setActionCommand(CRUD_EMPLOYEE);
         btnsAdminOperations.add(btnManageEmployees);
         contentPane.add(btnManageEmployees);
+
+        JButton btnCrudAccounts = new JButton("CRUD accounts");
+        btnCrudAccounts.setBounds(62, 138, 213, 63);
+        btnCrudAccounts.setActionCommand(CRUD_ACCOUNTS);
+        btnsAdminOperations.add(btnCrudAccounts);
+        contentPane.add(btnCrudAccounts);
+
     }
     public void setBtnListeners(ActionListener al)
     {

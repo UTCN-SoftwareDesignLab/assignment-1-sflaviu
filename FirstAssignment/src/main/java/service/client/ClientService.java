@@ -10,15 +10,14 @@ public interface ClientService {
 
     List<Client> findAll();
 
-    Client findById(Long id) throws EntityNotFoundException;
-
     Notification<Boolean> save(String name, String cnp, String cardID,String address);
 
     Notification<Boolean> update(Long id,String name, String cnp, String cardID,String address);
 
+    Notification<Client> findByCnp(String cnp);
+
     boolean remove(Long id);
 
-    Notification<Client> findByCnp(String cnp) throws EntityNotFoundException;
 
 
 }

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class ClientCRUDController implements Controller {
+public class ClientCRUDController extends TableBasedController<Client> {
 
     private ClientCRUDView clientView;
     private Map<String,Controller> nextControllers;
@@ -92,42 +92,11 @@ public class ClientCRUDController implements Controller {
     }
     private void populateClientTable(List<Client> clientList)
     {
-        String[][] tableData;
+        JTable clientsTable=populateTable(clientList);
 
-        ArrayList<String> firstRow=new ArrayList<>();
+        clientsTable.getSelectionModel().addListSelectionListener(new ClientListSelectionListener());
 
-        int row=0;
-        for(Field f: clientList.get(0).getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if(!Collection.class.isAssignableFrom(f.getType()))
-            {
-                firstRow.add(f.getName());
-                row++;
-            }
-        }
-        tableData=new String[clientList.size()][row];
-
-        int column;
-        row=0;
-        for(Client c:clientList) {
-            column = 0;
-            for (Field f : c.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                if(!Collection.class.isAssignableFrom(f.getType()))
-                    try {
-                        tableData[row][column] = f.get(c).toString();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                column++;
-            }
-            row++;
-        }
-        JTable table=new JTable(tableData,firstRow.toArray());
-
-        table.getSelectionModel().addListSelectionListener(new ClientListSelectionListener());
-
-        clientView.setClientsTable(table);
+        clientView.setClientsTable(clientsTable);
     }
 }
 

@@ -27,36 +27,36 @@ public class BillView extends JFrame {
 	public BillView() {
 		setTitle("Pay bill");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 616, 368);
+        setBounds(100, 100, 832, 368);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		clientScrollPane = new JScrollPane();
-		clientScrollPane.setBounds(24, 32, 251, 219);
+		clientScrollPane.setBounds(24, 32, 375, 219);
 		contentPane.add(clientScrollPane);
 		
 		accountScrollPane = new JScrollPane();
-		accountScrollPane.setBounds(307, 32, 251, 219);
+		accountScrollPane.setBounds(431, 32, 375, 219);
 		contentPane.add(accountScrollPane);
 		
 		txtSum = new JTextField();
-		txtSum.setBounds(89, 279, 136, 20);
+		txtSum.setBounds(346, 279, 136, 20);
 		contentPane.add(txtSum);
 		txtSum.setColumns(10);
 		
 		lblSum = new JLabel("Sum:");
-		lblSum.setBounds(24, 282, 68, 14);
+		lblSum.setBounds(274, 282, 68, 14);
 		contentPane.add(lblSum);
 		
 		rdbtnElectricBill = new JRadioButton("Electric Bill");
-		rdbtnElectricBill.setBounds(286, 258, 143, 23);
+		rdbtnElectricBill.setBounds(514, 258, 143, 23);;
         rdbtnElectricBill.setActionCommand("electricity");
 		contentPane.add(rdbtnElectricBill);
 		
 		rdbtnInternetBill = new JRadioButton("Internet Bill");
-		rdbtnInternetBill.setBounds(286, 299, 143, 23);
+		rdbtnInternetBill.setBounds(514, 299, 143, 23);
         rdbtnInternetBill.setActionCommand("internet");
 		contentPane.add(rdbtnInternetBill);
 
@@ -66,7 +66,7 @@ public class BillView extends JFrame {
         rdbtnElectricBill.setSelected(true);
 		
 		btnPayBill = new JButton("Pay Bill");
-		btnPayBill.setBounds(435, 278, 125, 23);
+		btnPayBill.setBounds(663, 278, 125, 23);
 		contentPane.add(btnPayBill);
 	}
 	public String getTxtSum() {

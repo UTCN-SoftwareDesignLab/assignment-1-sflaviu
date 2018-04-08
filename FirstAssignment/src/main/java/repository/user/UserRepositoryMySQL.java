@@ -35,12 +35,7 @@ public class UserRepositoryMySQL implements UserRepository {
             ResultSet userResultSet = statement.executeQuery(fetchRoleSql);
 
             if (userResultSet.next()) {
-                user = new UserBuilder()
-                        .setId(userResultSet.getLong("id"))
-                        .setUserName(userResultSet.getString("username"))
-                        .setPassword(userResultSet.getString("password"))
-                        .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
-                        .build();
+                user = createUser(userResultSet);
             }
             else
                 throw new EntityNotFoundException(id,User.class.getSimpleName());
@@ -60,12 +55,7 @@ public class UserRepositoryMySQL implements UserRepository {
 
             users=new ArrayList<>();
             while (userResultSet.next()) {
-                User user = new UserBuilder()
-                        .setId(userResultSet.getLong("id"))
-                        .setUserName(userResultSet.getString("username"))
-                        .setPassword(userResultSet.getString("password"))
-                        .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
-                        .build();
+                User user = createUser(userResultSet);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -82,12 +72,7 @@ public class UserRepositoryMySQL implements UserRepository {
             String fetchUserSql = "Select * from `" + USER + "` where `username`=\'" + username + "\' and `password`=\'" + password + "\'";
             ResultSet userResultSet = statement.executeQuery(fetchUserSql);
             if (userResultSet.next()) {
-                User user = new UserBuilder()
-                        .setId(userResultSet.getLong("id"))
-                        .setUserName(userResultSet.getString("username"))
-                        .setPassword(userResultSet.getString("password"))
-                        .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
-                        .build();
+                User user =  createUser(userResultSet);
                 findByUsernameAndPasswordNotification.setResult(user);
                 return findByUsernameAndPasswordNotification;
             } else {
@@ -165,6 +150,17 @@ public class UserRepositoryMySQL implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private User createUser(ResultSet userResultSet) throws SQLException
+    {
+        User user= new UserBuilder()
+                .setId(userResultSet.getLong("id"))
+                .setUserName(userResultSet.getString("username"))
+                .setPassword(userResultSet.getString("password"))
+                .setRoles(rightsRolesRepository.findRolesForUser(userResultSet.getLong("id")))
+                .build();
+        return user;
     }
 
 

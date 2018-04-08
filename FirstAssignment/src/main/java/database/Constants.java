@@ -43,6 +43,7 @@ public class Constants {
         public static final String CRUD_EMPLOYEE = "crud_employee";
         public static final String PAY_BILLS = "pay_bills";
         public static final String TRANSFER_MONEY= "transfer_money";
+        public static final String CRUD_ACCOUNTS= "crud_accounts";
     }
     public static class Rights {
         public static final String CREATE_USER = "create_user";

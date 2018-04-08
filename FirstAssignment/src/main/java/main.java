@@ -76,16 +76,19 @@ public class main {
 
         Controller userController=new UserCRUDController(new UserCRUDView(),new HashMap<>(),cf.getUserService());
 
+        Controller accountController=new AccountCRUDController(new AccountCRUDView(),new HashMap<>(),cf.getAccountService());
         HashMap<String, Controller> nextAdmin=new HashMap<>();
         nextAdmin.put(CRUD_CLIENT,clientController);
         nextAdmin.put(TRANSFER_MONEY,transferController);
         nextAdmin.put(PAY_BILLS,payBillController);
         nextAdmin.put(CRUD_EMPLOYEE,userController);
+        nextAdmin.put(CRUD_ACCOUNTS,accountController);
 
         HashMap<String, Controller> nextUser=new HashMap<>();
         nextUser.put(CRUD_CLIENT,clientController);
         nextUser.put(TRANSFER_MONEY,transferController);
         nextUser.put(PAY_BILLS,payBillController);
+        nextUser.put(CRUD_ACCOUNTS,accountController);
 
         AdminOperationsController ac=new AdminOperationsController(new AdminOperationsView(),nextAdmin);
         UserOperationsController uc=new UserOperationsController(new UserOperationsView(),nextUser);

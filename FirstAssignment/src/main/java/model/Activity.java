@@ -4,11 +4,11 @@ import java.sql.Date;
 
 public class Activity {
     private Long id;
-    private User performer;
+    private Long performerId;
     private Date date;
     private String type;
-    private Client modifiedClient;
-    private Account modifiedAccount;
+    private Long modifiedClientId;
+    private Long modifiedAccountId;
 
     public Long getId() {
         return id;
@@ -18,12 +18,8 @@ public class Activity {
         this.id = id;
     }
 
-    public User getPerformer() {
-        return performer;
-    }
-
-    public void setPerformer(User performer) {
-        this.performer = performer;
+    public Long getPerformerId() {
+        return performerId;
     }
 
     public Date getDate() {
@@ -42,19 +38,23 @@ public class Activity {
         this.type = type;
     }
 
-    public Client getModifiedClient() {
-        return modifiedClient;
+    public Long getModifiedClientId() {
+        return modifiedClientId;
     }
 
-    public void setModifiedClient(Client modifiedClient) {
-        this.modifiedClient = modifiedClient;
+    public Long getModifiedAccountId() {
+        return modifiedAccountId;
     }
 
-    public Account getModifiedAccount() {
-        return modifiedAccount;
+    public void setPerformerId(Long performerId) {
+        this.performerId = performerId;
     }
 
-    public void setModifiedAccount(Account modifiedAccount) {
-        this.modifiedAccount = modifiedAccount;
+    public void setModifiedClientId(Long modifiedClientId) {
+        this.modifiedClientId = modifiedClientId;
+    }
+
+    public void setModifiedAccountId(Long modifiedAccountId) {
+        this.modifiedAccountId = modifiedAccountId;
     }
 }

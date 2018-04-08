@@ -1,5 +1,6 @@
 import database.DBConnectionFactory;
 import model.builder.AccountBuilder;
+import model.builder.ActivityBuilder;
 import model.builder.ClientBuilder;
 import model.builder.UserBuilder;
 import model.validation.ClientValidator;
@@ -59,13 +60,13 @@ public class ComponentFactory {
         this.userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
         this.accountRepository= new AccountRepositoryMySQL(connection);
         this.clientRepository = new ClientRepositoryMySQL(connection,accountRepository);
-        this.activityRepository = new ActivityRepositoryMySQL(connection,userRepository,clientRepository,accountRepository);
+        this.activityRepository = new ActivityRepositoryMySQL(connection,userRepository);
 
         this.authenticationService=new AuthenticationServiceImpl(userRepository,rightsRolesRepository);
-        this.accountService=new AccountServiceImpl(accountRepository,new AccountBuilder());
+        this.clientService=new ClientServiceImpl(clientRepository);
+        this.accountService=new AccountServiceImpl(accountRepository,clientService);
         this.activityService= new ActivityServiceImpl(activityRepository) ;
-        this.clientService=new ClientServiceImpl(clientRepository,new ClientBuilder());
-        this.userService=new UserServiceImpl(new UserBuilder(),userRepository,rightsRolesRepository,authenticationService);
+        this.userService=new UserServiceImpl(userRepository,rightsRolesRepository,authenticationService);
     }
 
 

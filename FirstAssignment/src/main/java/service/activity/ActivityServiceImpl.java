@@ -1,11 +1,19 @@
 package service.activity;
 
+import model.Account;
 import model.Activity;
+import model.Client;
 import model.User;
+import model.builder.AccountBuilder;
+import model.builder.ActivityBuilder;
+import model.validation.ActivityValidator;
+import model.validation.Notification;
+import model.validation.Validator;
 import repository.EntityNotFoundException;
 import repository.activity.ActivityRepository;
 import service.activity.ActivityService;
 
+import java.sql.Date;
 import java.util.List;
 
 public class ActivityServiceImpl implements ActivityService {
@@ -21,14 +29,24 @@ public class ActivityServiceImpl implements ActivityService {
         return activityRepository.findAll();
     }
 
-    @Override
-    public Activity findById(Long id) throws EntityNotFoundException {
-        return activityRepository.findById(id);
-    }
 
     @Override
-    public boolean save(Activity activity) {
-        return activityRepository.save(activity);
+    public Notification<Boolean> save(String type, User user, Date date,Long clientId,Long accountId)
+    {
+        Activity activity=new ActivityBuilder().setType(type).setPerformer(clientId).setDate(date).build();
+
+        Validator activityValidator=new ActivityValidator(activity);
+
+        boolean activityValid = activityValidator.validate();
+        Notification<Boolean> activitySavingNotification = new Notification<>();
+
+        if (!activityValid) {
+            activityValidator.getErrors().forEach(activitySavingNotification::addError);
+            activitySavingNotification.setResult(Boolean.FALSE);
+        } else {
+            activitySavingNotification.setResult(activityRepository.save(activity));
+        }
+        return activitySavingNotification;
     }
 
     @Override

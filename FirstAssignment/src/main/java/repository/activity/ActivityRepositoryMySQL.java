@@ -19,16 +19,10 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
 
     private final Connection connection;
     private final UserRepository userRepository;
-    private final ClientRepository clientRepository;
-    private final AccountRepository accountRepository;
 
-
-
-    public ActivityRepositoryMySQL(Connection connection,UserRepository userRepository,ClientRepository clientRepository,AccountRepository accountRepository) {
+    public ActivityRepositoryMySQL(Connection connection,UserRepository userRepository) {
         this.connection = connection;
         this.userRepository=userRepository;
-        this.clientRepository=clientRepository;
-        this.accountRepository=accountRepository;
 
     }
 
@@ -44,33 +38,12 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
 
             activities=new ArrayList<>();
             while (activityResultSet.next()) {
-
-                Account modifiedAccount=null;
-                if(activityResultSet.getLong("acc_id")!=0)
-                    modifiedAccount=accountRepository.findById(activityResultSet.getLong("acc_id"));
-
-                Client modifiedClient=null;
-                if(activityResultSet.getLong("cl_id")!=0)
-                    modifiedClient =clientRepository.findById(activityResultSet.getLong("cl_id"));
-
-                Activity activity = new ActivityBuilder()
-                        .setId(activityResultSet.getLong("id"))
-                        .setPerformer(userRepository.findById(activityResultSet.getLong("us_id")))
-                        .setDate(activityResultSet.getDate("date"))
-                        .setType(activityResultSet.getString("type"))
-                        .setModifiedAccount(modifiedAccount)
-                        .setModifiedClient(modifiedClient)
-                        .build();
+                Activity activity = createActivity(activityResultSet);
                 activities.add(activity);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        catch (EntityNotFoundException e)
-        {
-            e.printStackTrace();
-            System.out.println("Database integrity may be at fault !");
         }
         return activities;
     }
@@ -86,14 +59,7 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
             ResultSet activityResultSet = statement.executeQuery(fetchActivitySql);
 
             if(activityResultSet.next()) {
-                activity = new ActivityBuilder()
-                        .setId(activityResultSet.getLong("id"))
-                        .setPerformer(userRepository.findById(activityResultSet.getLong("us_id")))
-                        .setDate(activityResultSet.getDate("date"))
-                        .setType(activityResultSet.getString("type"))
-                        .setModifiedAccount(accountRepository.findById(activityResultSet.getLong("acc_id")))
-                        .setModifiedClient(clientRepository.findById(activityResultSet.getLong("cl_id")))
-                        .build();
+                activity = createActivity(activityResultSet);
             }
             else
             {
@@ -120,24 +86,12 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
 
             activities=new ArrayList<>();
             while(activityResultSet.next()) {
-                Activity activity = new ActivityBuilder()
-                        .setId(activityResultSet.getLong("id"))
-                        .setPerformer(userRepository.findById(activityResultSet.getLong("us_id")))
-                        .setDate(activityResultSet.getDate("date"))
-                        .setType(activityResultSet.getString("type"))
-                        .setModifiedAccount(accountRepository.findById(activityResultSet.getLong("acc_id")))
-                        .setModifiedClient(clientRepository.findById(activityResultSet.getLong("cl_id")))
-                        .build();
+                Activity activity = createActivity(activityResultSet);
                 activities.add(activity);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        catch (EntityNotFoundException e)
-        {
-            e.printStackTrace();
-            System.out.println("Database integrity may be at fault !");
         }
 
         return activities;
@@ -146,22 +100,14 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
     @Override
     public boolean save(Activity activity) {
 
-        Long modifiedClientId=null;
-        if(activity.getModifiedClient()!=null)
-            modifiedClientId=activity.getModifiedClient().getId();
-
-        Long modifiedAccountId=null;
-        if(activity.getModifiedAccount()!=null)
-            modifiedAccountId=activity.getModifiedAccount().getId();
-
         try {
             PreparedStatement insertActivityStatement = connection
                     .prepareStatement("INSERT INTO "+ACTIVITY+" values (null, ?, ?, ?, ?, ?)");
             insertActivityStatement.setString(1, activity.getType());
-            insertActivityStatement.setLong(2, activity.getPerformer().getId());
+            insertActivityStatement.setLong(2, activity.getModifiedClientId());
             insertActivityStatement.setDate(3, activity.getDate());
-            insertActivityStatement.setObject(4, modifiedClientId);
-            insertActivityStatement.setObject(5, modifiedAccountId);
+            insertActivityStatement.setObject(4, activity.getModifiedClientId());
+            insertActivityStatement.setObject(5, activity.getModifiedAccountId());
             insertActivityStatement.executeUpdate();
 
             ResultSet rs = insertActivityStatement.getGeneratedKeys();
@@ -186,6 +132,18 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private Activity createActivity(ResultSet activityResultSet) throws SQLException
+    {
+        Activity activity= new ActivityBuilder()
+                .setId(activityResultSet.getLong("id"))
+                .setDate(activityResultSet.getDate("date"))
+                .setType(activityResultSet.getString("type"))
+                .setPerformer(activityResultSet.getLong("us_id"))
+                .setModifiedAccountId(activityResultSet.getLong("acc_id"))
+                .setModifiedClientId(activityResultSet.getLong("cl_id"))
+                .build();
+        return activity;
     }
 
 }

@@ -20,8 +20,8 @@ public class ActivityBuilder implements Builder<Activity>{
         return this;
     }
 
-    public ActivityBuilder setPerformer(User performer){
-        activity.setPerformer(performer);
+    public ActivityBuilder setPerformer(Long performerId){
+        activity.setPerformerId(performerId);
         return this;
     }
 
@@ -35,13 +35,13 @@ public class ActivityBuilder implements Builder<Activity>{
         return this;
     }
 
-    public ActivityBuilder setModifiedClient(Client modified) {
-        activity.setModifiedClient(modified);
+    public ActivityBuilder setModifiedClientId(Long modifiedId) {
+        activity.setModifiedClientId(modifiedId);
         return this;
     }
 
-    public ActivityBuilder setModifiedAccount(Account account) {
-        activity.setModifiedAccount(account);
+    public ActivityBuilder setModifiedAccountId(Long modifiedId) {
+        activity.setModifiedClientId(modifiedId);
         return this;
     }
 

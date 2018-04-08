@@ -34,32 +34,40 @@ public class TransferView extends JFrame {
     public TransferView() {
         setTitle("Transfer");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 543, 352);
+        setBounds(100, 100, 758, 352);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
         senderPane = new JScrollPane();
-        senderPane.setBounds(10, 24, 232, 219);
+        senderPane.setBounds(10, 39, 341, 219);
         contentPane.add(senderPane);
 
         txtSum = new JTextField();
         txtSum.setColumns(10);
-        txtSum.setBounds(137, 271, 121, 20);
+        txtSum.setBounds(457, 271, 121, 20);
         contentPane.add(txtSum);
 
         lblSum = new JLabel("Sum:");
-        lblSum.setBounds(27, 274, 46, 14);
+        lblSum.setBounds(391, 274, 56, 14);
         contentPane.add(lblSum);
 
         receiverPane = new JScrollPane();
-        receiverPane.setBounds(260, 24, 232, 219);
+        receiverPane.setBounds(391, 39, 341, 219);
         contentPane.add(receiverPane);
 
         btnTransfer = new JButton("Transfer");
-        btnTransfer.setBounds(320, 270, 144, 23);
+        btnTransfer.setBounds(588, 270, 144, 23);
         contentPane.add(btnTransfer);
+
+        JLabel lblSender = new JLabel("Sender");
+        lblSender.setBounds(10, 11, 86, 14);
+        contentPane.add(lblSender);
+
+        JLabel lblReceiver = new JLabel("Receiver");
+        lblReceiver.setBounds(391, 11, 86, 14);
+        contentPane.add(lblReceiver);
     }
     public String getTxtSum() {
         return txtSum.getText();

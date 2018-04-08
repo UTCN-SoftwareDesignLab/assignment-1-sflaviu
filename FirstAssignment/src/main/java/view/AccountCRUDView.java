@@ -18,16 +18,9 @@ public class AccountCRUDView extends JFrame {
 	private JTable tableAccounts;
 
 	private JButton btnUpdateAccount;
-    private JButton btnOwner;
+    private JButton btnDisplayOwner;
     private JButton btnDeleteAccount;
     private JButton btnAddAccount;
-
-    private JLabel lblType;
-    private JLabel lblBalance;
-    private JLabel lblDate;
-	/**
-	 * Create the frame.
-	 */
 
 	public AccountCRUDView() {
 		setTitle("Account");
@@ -38,7 +31,7 @@ public class AccountCRUDView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 11, 418, 243);
 		contentPane.add(scrollPane);
 
@@ -62,33 +55,37 @@ public class AccountCRUDView extends JFrame {
         contentPane.add(txtClientId);
         txtClientId.setColumns(10);
 
-		JButton btnUpdateAccount = new JButton("Update Account");
+		btnUpdateAccount = new JButton("Update Account");
 		btnUpdateAccount.setBounds(438, 306, 158, 22);
 		contentPane.add(btnUpdateAccount);
 
-		JButton btnNewButton = new JButton("Display Owner");
-		btnNewButton.setBounds(438, 40, 158, 23);
-		contentPane.add(btnNewButton);
+		btnDisplayOwner = new JButton("Display Owner");
+        btnDisplayOwner .setBounds(438, 40, 158, 23);
+		contentPane.add(btnDisplayOwner );
 
-		JButton btnDeleteClient = new JButton("Delete Account");
-		btnDeleteClient.setBounds(438, 203, 158, 23);
-		contentPane.add(btnDeleteClient);
+		btnDeleteAccount = new JButton("Delete Account");
+		btnDeleteAccount.setBounds(438, 203, 158, 23);
+		contentPane.add(btnDeleteAccount);
 
-		JButton btnAddAccount = new JButton("Add Account");
+		btnAddAccount = new JButton("Add Account");
 		btnAddAccount.setBounds(438, 257, 158, 23);
 		contentPane.add(btnAddAccount);
 
-		lblType = new JLabel("Type");
+        JLabel lblType = new JLabel("Type");
 		lblType.setBounds(20, 269, 75, 14);
 		contentPane.add(lblType);
 
-		lblBalance = new JLabel("Balance");
+        JLabel lblBalance = new JLabel("Balance");
 		lblBalance.setBounds(147, 269, 75, 14);
 		contentPane.add(lblBalance);
 
-		lblDate = new JLabel("Date");
+        JLabel lblDate = new JLabel("Date");
 		lblDate.setBounds(258, 269, 93, 14);
 		contentPane.add(lblDate);
+
+        JLabel txtOwnerCnp = new JLabel("Owner CNP");
+        txtOwnerCnp.setBounds(478, 121, 94, 14);
+        contentPane.add(txtOwnerCnp);
 	}
 
     public String getTxtType() {
@@ -101,19 +98,6 @@ public class AccountCRUDView extends JFrame {
 
     public String getTxtDate() {
         return txtDate.getText();
-    }
-
-
-    public void setTxtType(String txtType) {
-        this.txtType.setText(txtType);
-    }
-
-    public void setTxtBalance(String txtBalance) {
-        this.txtBalance.setText(txtBalance);
-    }
-
-    public void setTxtDate(String txtDate) {
-        this.txtDate.setText(txtDate);
     }
 
     public void setAccountsTable(JTable accounts)
@@ -134,7 +118,7 @@ public class AccountCRUDView extends JFrame {
         btnAddAccount.addActionListener(al);
     }
     public void setBtnDisplayOwnerListener(ActionListener al) {
-        btnOwner.addActionListener(al);
+        btnDisplayOwner.addActionListener(al);
     }
 
     public int getSelectedAccount()
@@ -143,15 +127,16 @@ public class AccountCRUDView extends JFrame {
     }
     public void updateTextBoxes(int row)
     {
-        txtType.setText((String)tableAccounts.getModel().getValueAt(row,1));
+        txtType.setText((String)tableAccounts.getModel().getValueAt(row,3));
         txtBalance.setText((String)tableAccounts.getModel().getValueAt(row,2));
-        txtDate.setText((String)tableAccounts.getModel().getValueAt(row,3));
+        txtDate.setText((String)tableAccounts.getModel().getValueAt(row,1));
     }
 
-    public String getTxtClientId()
+    public String getTxtClientCnp()
     {
         return txtClientId.getText();
     }
+
     public Long getSelectedAccountId()
     {
         return Long.parseLong((String)tableAccounts.getModel().getValueAt(tableAccounts.getSelectedRow(),0));

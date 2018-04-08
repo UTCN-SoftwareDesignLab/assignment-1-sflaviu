@@ -14,13 +14,11 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private UserBuilder userBuilder;
     private UserRepository userRepository;
     private RightsRolesRepository rightsRolesRepository;
     private AuthenticationService authenticationService;
 
-    public UserServiceImpl(UserBuilder userBuilder, UserRepository userRepository,RightsRolesRepository rightsRolesRepository,AuthenticationService authenticationService) {
-        this.userBuilder = userBuilder;
+    public UserServiceImpl(UserRepository userRepository,RightsRolesRepository rightsRolesRepository,AuthenticationService authenticationService) {
         this.userRepository = userRepository;
         this.rightsRolesRepository=rightsRolesRepository;
         this.authenticationService=authenticationService;
@@ -31,10 +29,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    @Override
-    public User findById(Long id) throws EntityNotFoundException {
-        return userRepository.findById(id);
-    }
 
     @Override
     public Notification<Boolean> save(String username, String password) {
@@ -43,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Notification<Boolean> update(Long id, String username, String password) {
-        User user=userBuilder.setUserName(username).setPassword(password).build();
+        User user=new UserBuilder().setUserName(username).setPassword(password).build();
         Validator userValidator=new UserValidator(user);
 
         boolean userValid = userValidator.validate();

@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static database.Constants.Tables.ACCOUNT;
-import static database.Constants.Tables.CLIENT;
 
 public class AccountRepositoryMySQL implements AccountRepository {
 
 
     private final Connection connection;
-
 
     public AccountRepositoryMySQL(Connection connection) {
         this.connection = connection;
@@ -32,12 +30,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
 
             accounts=new ArrayList<Account>();
             while(accountResultSet.next()) {
-                Account account = new AccountBuilder()
-                        .setId(accountResultSet.getLong("id"))
-                        .setCreation(accountResultSet.getDate("creation"))
-                        .setBalance(accountResultSet.getInt("balance"))
-                        .setType(accountResultSet.getString("type"))
-                        .build();
+                Account account = createAccount(accountResultSet);
                 accounts.add(account);
             }
 
@@ -57,12 +50,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
             ResultSet accountResultSet = statement.executeQuery(fetchRoleSql);
 
             if(accountResultSet.next()) {
-                account = new AccountBuilder()
-                        .setId(accountResultSet.getLong("id"))
-                        .setCreation(accountResultSet.getDate("creation"))
-                        .setBalance(accountResultSet.getInt("balance"))
-                        .setType(accountResultSet.getString("type"))
-                        .build();
+                account = createAccount(accountResultSet);
             }
             else
             {
@@ -112,12 +100,7 @@ public class AccountRepositoryMySQL implements AccountRepository {
 
             accounts=new ArrayList<Account>();
             while(accountResultSet.next()) {
-                Account account = new AccountBuilder()
-                        .setId(accountResultSet.getLong("id"))
-                        .setCreation(accountResultSet.getDate("creation"))
-                        .setBalance(accountResultSet.getInt("balance"))
-                        .setType(accountResultSet.getString("type"))
-                        .build();
+                Account account = createAccount(accountResultSet);
                 accounts.add(account);
             }
 
@@ -170,5 +153,16 @@ public class AccountRepositoryMySQL implements AccountRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private Account createAccount(ResultSet accountResultSet) throws SQLException
+    {
+        Account account =new AccountBuilder()
+                .setId(accountResultSet.getLong("id"))
+                .setCreation(accountResultSet.getDate("creation"))
+                .setBalance(accountResultSet.getInt("balance"))
+                .setType(accountResultSet.getString("type"))
+                .build();
+        return account;
     }
 }

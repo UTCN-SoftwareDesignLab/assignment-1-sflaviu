@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class TransferController implements Controller{
+public class TransferController extends TableBasedController<Account>{
 
     private TransferView transferView;
     private Map<String,Controller> nextControllers;
@@ -112,8 +112,6 @@ public class TransferController implements Controller{
         }catch (NumberFormatException e) {
             inputNotification.addError("The inputed sum is not a number!");
         }
-        if(sum<=0)
-            inputNotification.addError("The sum must be positive");
 
         if(!inputNotification.hasErrors())
             inputNotification.setResult(true);
@@ -123,40 +121,8 @@ public class TransferController implements Controller{
 
     private void populateAccountsTables(List<Account> accountsList)
     {
-        String[][] tableData;
-
-        ArrayList<String> firstRow=new ArrayList<>();
-
-        int row=0;
-        for(Field f: accountsList.get(0).getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if(!Collection.class.isAssignableFrom(f.getType()))
-            {
-                firstRow.add(f.getName());
-                row++;
-            }
-        }
-        tableData=new String[accountsList.size()][row];
-
-        int column;
-        row=0;
-        for(Account c:accountsList) {
-            column = 0;
-            for (Field f : c.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                if(!Collection.class.isAssignableFrom(f.getType()))
-                    try {
-                        tableData[row][column] = f.get(c).toString();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                column++;
-            }
-            row++;
-        }
-
-        JTable receiverTable=new JTable(tableData,firstRow.toArray());
-        JTable senderTable=new JTable(tableData,firstRow.toArray());
+        JTable receiverTable=populateTable(accountsList);
+        JTable senderTable=populateTable(accountsList);
 
         senderTable.getSelectionModel().addListSelectionListener(new SenderListSelectionListener());
         receiverTable.getSelectionModel().addListSelectionListener(new ReceiverListSelectionListener() );

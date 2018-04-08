@@ -13,7 +13,7 @@ public interface ClientRepository {
 
     Client findById(Long id) throws EntityNotFoundException;
 
-    Notification<Client> findByCnp(String cnp) throws EntityNotFoundException;
+    Client findByCnp(String cnp) throws EntityNotFoundException;
 
     boolean save(Client client);
 

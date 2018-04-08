@@ -14,11 +14,9 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private ClientBuilder clientBuilder;
 
-    public ClientServiceImpl(ClientRepository clientRepository, ClientBuilder clientBuilder) {
+    public ClientServiceImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-        this.clientBuilder=clientBuilder;
     }
 
     @Override
@@ -26,15 +24,11 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.findAll();
     }
 
-    @Override
-    public Client findById(Long id) throws EntityNotFoundException {
-        return clientRepository.findById(id);
-    }
 
     @Override
     public Notification<Boolean> save(String name, String cnp, String cardID,String address) {
 
-        Client client=clientBuilder.setName(name).setCnp(cnp).setCardNr(cardID).setAddress(address).build();
+        Client client=new ClientBuilder().setName(name).setCnp(cnp).setCardNr(cardID).setAddress(address).build();
 
         Validator clientValidator=new ClientValidator(client);
         boolean clientValid = clientValidator.validate();
@@ -50,14 +44,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Notification<Client> findByCnp(String cnp) throws EntityNotFoundException {
-        return clientRepository.findByCnp(cnp);
-    }
-
-    @Override
     public Notification<Boolean> update(Long id,String name, String cnp, String cardID,String address)
     {
-        Client client=clientBuilder.setName(name).setCnp(cnp).setCardNr(cardID).setAddress(address).build();
+        Client client=new ClientBuilder().setName(name).setCnp(cnp).setCardNr(cardID).setAddress(address).build();
         Validator clientValidator=new ClientValidator(client);
 
         boolean clientValid = clientValidator.validate();
@@ -71,6 +60,20 @@ public class ClientServiceImpl implements ClientService {
         }
         return clientAddingNotification;
 
+    }
+
+    public Notification<Client> findByCnp(String cnp)
+    {
+        Notification<Client> findByCnpNotification=new Notification<>();
+
+        try {
+            findByCnpNotification.setResult(clientRepository.findByCnp(cnp));
+        }
+        catch(EntityNotFoundException e)
+        {
+            findByCnpNotification.addError("No client with "+e.getEntityId()+" as cnp was found!");
+        }
+        return findByCnpNotification;
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class UserCRUDController implements Controller {
+public class UserCRUDController extends TableBasedController<User> {
 
     private UserCRUDView userView;
     private Map<String,Controller> nextControllers;
@@ -107,39 +107,7 @@ public class UserCRUDController implements Controller {
     }
     private void populateUsersTable(List<User> usersList)
     {
-        String[][] tableData;
-
-        ArrayList<String> firstRow=new ArrayList<>();
-
-        int row=0;
-        for(Field f: usersList.get(0).getClass().getDeclaredFields()) {
-            f.setAccessible(true);
-            if(!Collection.class.isAssignableFrom(f.getType()))
-            {
-                firstRow.add(f.getName());
-                row++;
-            }
-        }
-        tableData=new String[usersList.size()][row];
-
-        int column;
-        row=0;
-        for(User c:usersList) {
-            column = 0;
-            for (Field f : c.getClass().getDeclaredFields()) {
-                f.setAccessible(true);
-                if(!Collection.class.isAssignableFrom(f.getType()))
-                    try {
-                        tableData[row][column] = f.get(c).toString();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                column++;
-            }
-            row++;
-        }
-
-        JTable usersTable=new JTable(tableData,firstRow.toArray());
+        JTable usersTable=populateTable(usersList);
 
         usersTable.getSelectionModel().addListSelectionListener(new UserListSelectionListener());
 
