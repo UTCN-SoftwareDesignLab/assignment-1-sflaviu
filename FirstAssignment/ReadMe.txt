@@ -5,5 +5,7 @@ In order to run the application:
 		
 		administrator@gmail.com 	Administrator123?
 		user@gmail.com 			User123?
+	
+	One admin,one regular user.
 
 	4. Don't be too harsh on it :D
