@@ -77,7 +77,7 @@ public class ComponentFactory {
         this.clientService=new ClientServiceSQL(clientRepository);
         this.accountService=new AccountServiceSQL(accountRepository,clientService);
         this.activityService= new ActivityServiceSQL(activityRepository) ;
-        this.userService=new UserServiceSQL(userRepository,rightsRolesRepository,authenticationService);
+        this.userService=new UserServiceSQL(userRepository,authenticationService);
 
 
         this.clientController=new ClientCRUDController(new ClientCRUDView(),clientService,new HashMap<>(),activityService);
@@ -113,6 +113,30 @@ public class ComponentFactory {
 
         nextAdmin.put(LOG_OUT,loginController);
         nextUser.put(LOG_OUT,loginController);
+    }
+
+    public Controller getClientController() {
+        return clientController;
+    }
+
+    public Controller getTransferController() {
+        return transferController;
+    }
+
+    public Controller getPayBillController() {
+        return payBillController;
+    }
+
+    public Controller getUserController() {
+        return userController;
+    }
+
+    public Controller getReportController() {
+        return reportController;
+    }
+
+    public Controller getAccountController() {
+        return accountController;
     }
 
     public static ComponentFactory getInstance() {

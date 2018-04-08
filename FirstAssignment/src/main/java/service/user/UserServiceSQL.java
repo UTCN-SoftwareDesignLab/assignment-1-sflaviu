@@ -15,12 +15,10 @@ import java.util.List;
 public class UserServiceSQL implements UserService {
 
     private UserRepository userRepository;
-    private RightsRolesRepository rightsRolesRepository;
     private AuthenticationService authenticationService;
 
-    public UserServiceSQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository, AuthenticationService authenticationService) {
+    public UserServiceSQL(UserRepository userRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
-        this.rightsRolesRepository=rightsRolesRepository;
         this.authenticationService=authenticationService;
     }
 

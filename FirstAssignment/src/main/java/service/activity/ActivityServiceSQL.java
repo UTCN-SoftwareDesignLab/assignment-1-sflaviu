@@ -53,4 +53,10 @@ public class ActivityServiceSQL implements ActivityService {
     public List<Activity> findByPerformer(Long ownerId) {
         return activityRepository.findByPerformerId(ownerId);
     }
+
+    @Override
+    public void removeAll() {
+        activityRepository.removeAll();
+    }
+
 }

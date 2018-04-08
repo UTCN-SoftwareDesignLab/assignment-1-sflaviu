@@ -15,4 +15,6 @@ public interface ActivityService {
     Notification<Boolean> save(String type, Long userId, Date date,Long clientId,Long accountId);
 
     List<Activity> findByPerformer(Long ownerId);
+
+    void removeAll();
 }

@@ -17,8 +17,8 @@ import java.sql.Date;
 
 public class AccountServiceSQLTest {
 
-    public static Account firstTestAccount;
-    public static  Account secondTestAccount;
+    private static Account firstTestAccount;
+    private static  Account secondTestAccount;
     private static AccountService accountService;
     private static ClientService clientService;
 
