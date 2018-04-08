@@ -10,9 +10,11 @@ import view.LoginView;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import static database.Constants.Roles.ADMINISTRATOR;
 import static database.Constants.Roles.EMPLOYEE;
 
 /**
@@ -23,6 +25,8 @@ public class LoginController implements Controller {
     private final AuthenticationService authenticationService;
 
     private Map<String,Controller> nextControllers;
+    private Long activeUserId;
+
 
     public LoginController(LoginView loginView, AuthenticationService authenticationService,HashMap<String,Controller> nextControllers) {
 
@@ -55,6 +59,8 @@ public class LoginController implements Controller {
                 } else {
                     JOptionPane.showMessageDialog(loginView.getContentPane(), "Login successful!");
                     String role=getRole(loginNotification.getResult());
+
+                    activeUserId=loginNotification.getResult().getId();
                     openNextController(role);
                 }
             }
@@ -75,8 +81,7 @@ public class LoginController implements Controller {
                 if (!registerNotification.getResult()) {
                     JOptionPane.showMessageDialog(loginView.getContentPane(), "Registration not successful, please try again later.");
                 } else {
-                    JOptionPane.showMessageDialog(loginView.getContentPane(), "Registration successful!");
-                    openNextController(EMPLOYEE);
+                    JOptionPane.showMessageDialog(loginView.getContentPane(), "Registration successful! Test your credentials by logging in!");
                 }
             }
         }
@@ -88,17 +93,28 @@ public class LoginController implements Controller {
     }
     public void showGUI()
     {
+        for(Controller c:nextControllers.values())
+            c.hideGUI();
+        loginView.emptyPassword();
+        loginView.emptyUsername();
         loginView.setVisible(true);
+        activeUserId=null;
+
     }
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
+
     public void openNextController(String next)
     {
         hideGUI();
         nextControllers.get(next).showGUI();
+        nextControllers.get(next).setActiveUser(activeUserId);
     }
 
     private String getRole(User user)
     {
-        System.out.println( user.getRoles().get(0).getRole());
+        for(Role r:user.getRoles())
+            if(r.getRole().equals(ADMINISTRATOR))
+                return ADMINISTRATOR;
         return user.getRoles().get(0).getRole();
     }
 

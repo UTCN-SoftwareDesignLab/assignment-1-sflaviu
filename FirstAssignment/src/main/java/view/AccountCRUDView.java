@@ -11,7 +11,7 @@ public class AccountCRUDView extends JFrame {
 	private JTextField txtType;
 	private JTextField txtBalance;
 	private JTextField txtDate;
-	private JTextField txtClientId;
+	private JTextField txtClientCnp;
 
 	private JScrollPane scrollPane;
 
@@ -36,24 +36,24 @@ public class AccountCRUDView extends JFrame {
 		contentPane.add(scrollPane);
 
 		txtType = new JTextField();
-		txtType.setBounds(10, 294, 127, 20);
+		txtType.setBounds(10, 294, 160, 20);
 		contentPane.add(txtType);
 		txtType.setColumns(10);
 
 		txtBalance = new JTextField();
-		txtBalance.setBounds(147, 294, 86, 20);
+		txtBalance.setBounds(180, 294, 101, 20);
 		contentPane.add(txtBalance);
 		txtBalance.setColumns(10);
 
 		txtDate = new JTextField();
-		txtDate.setBounds(258, 294, 136, 20);
+        txtDate.setBounds(291, 294, 137, 20);
 		contentPane.add(txtDate);
 		txtDate.setColumns(10);
 
-        txtClientId = new JTextField();
-        txtClientId.setBounds(438, 120, 86, 20);
-        contentPane.add(txtClientId);
-        txtClientId.setColumns(10);
+        txtClientCnp = new JTextField();
+        txtClientCnp.setBounds(438, 147, 158, 20);
+        contentPane.add(txtClientCnp);
+        txtClientCnp.setColumns(10);
 
 		btnUpdateAccount = new JButton("Update Account");
 		btnUpdateAccount.setBounds(438, 306, 158, 22);
@@ -64,11 +64,11 @@ public class AccountCRUDView extends JFrame {
 		contentPane.add(btnDisplayOwner );
 
 		btnDeleteAccount = new JButton("Delete Account");
-		btnDeleteAccount.setBounds(438, 203, 158, 23);
+		btnDeleteAccount.setBounds(438, 272, 158, 23);
 		contentPane.add(btnDeleteAccount);
 
 		btnAddAccount = new JButton("Add Account");
-		btnAddAccount.setBounds(438, 257, 158, 23);
+		btnAddAccount.setBounds(438, 178, 158, 23);
 		contentPane.add(btnAddAccount);
 
         JLabel lblType = new JLabel("Type");
@@ -76,16 +76,16 @@ public class AccountCRUDView extends JFrame {
 		contentPane.add(lblType);
 
         JLabel lblBalance = new JLabel("Balance");
-		lblBalance.setBounds(147, 269, 75, 14);
+        lblBalance.setBounds(180, 269, 75, 14);
 		contentPane.add(lblBalance);
 
         JLabel lblDate = new JLabel("Date");
-		lblDate.setBounds(258, 269, 93, 14);
+        lblDate.setBounds(281, 269, 93, 14);
 		contentPane.add(lblDate);
 
-        JLabel txtOwnerCnp = new JLabel("Owner CNP");
-        txtOwnerCnp.setBounds(478, 121, 94, 14);
-        contentPane.add(txtOwnerCnp);
+        JLabel lblOwnerCnp = new JLabel("Owner CNP");
+        lblOwnerCnp.setBounds(485, 122, 94, 14);
+        contentPane.add(lblOwnerCnp);
 	}
 
     public String getTxtType() {
@@ -134,7 +134,7 @@ public class AccountCRUDView extends JFrame {
 
     public String getTxtClientCnp()
     {
-        return txtClientId.getText();
+        return txtClientCnp.getText();
     }
 
     public Long getSelectedAccountId()

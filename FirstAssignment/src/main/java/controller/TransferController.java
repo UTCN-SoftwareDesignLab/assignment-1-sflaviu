@@ -3,6 +3,7 @@ package controller;
 import model.Account;
 import model.validation.Notification;
 import service.account.AccountService;
+import service.activity.ActivityService;
 import view.TransferView;
 
 import javax.swing.*;
@@ -11,10 +12,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TransferController extends TableBasedController<Account>{
 
@@ -25,7 +23,11 @@ public class TransferController extends TableBasedController<Account>{
     private Long receiverId;
     private Long senderId;
 
-    public TransferController(TransferView transferView, Map<String, Controller> nextControllers, AccountService accountService) {
+    private Long activeUserId;
+
+    public TransferController(TransferView transferView, Map<String, Controller> nextControllers, AccountService accountService, ActivityService bigBrother) {
+
+        super(bigBrother);
         this.transferView = transferView;
         this.nextControllers = nextControllers;
         this.accountService = accountService;
@@ -55,6 +57,9 @@ public class TransferController extends TableBasedController<Account>{
 
     }
 
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
+
     private class ReceiverListSelectionListener implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
             receiverId=transferView.getSelectedReceiverId();
@@ -75,7 +80,8 @@ public class TransferController extends TableBasedController<Account>{
             Notification<Boolean> inputNotification=checkInput();
             if(!inputNotification.hasErrors())
             {
-                Notification<Boolean> transferNotification = accountService.transfer(receiverId,senderId,Integer.parseInt(transferView.getTxtSum()));
+                int sum=Integer.parseInt(transferView.getTxtSum());
+                Notification<Boolean> transferNotification = accountService.transfer(receiverId,senderId,sum);
                 if (transferNotification.hasErrors()) {
                     JOptionPane.showMessageDialog(transferView.getContentPane(), transferNotification.getFormattedErrors());
                 } else {
@@ -84,6 +90,7 @@ public class TransferController extends TableBasedController<Account>{
                     } else {
                         JOptionPane.showMessageDialog(transferView.getContentPane(), "Transfer successful!");
                         populateAccountsTables(accountService.findAll());
+                        logActivity("Transfered "+sum+" dollars.",activeUserId,convertToSqlDate(new Date()),null,senderId);
                     }
                 }
             }
@@ -121,14 +128,16 @@ public class TransferController extends TableBasedController<Account>{
 
     private void populateAccountsTables(List<Account> accountsList)
     {
-        JTable receiverTable=populateTable(accountsList);
-        JTable senderTable=populateTable(accountsList);
+        if(accountsList.size()>0) {
+            JTable receiverTable = populateTable(accountsList);
+            JTable senderTable = populateTable(accountsList);
 
-        senderTable.getSelectionModel().addListSelectionListener(new SenderListSelectionListener());
-        receiverTable.getSelectionModel().addListSelectionListener(new ReceiverListSelectionListener() );
+            senderTable.getSelectionModel().addListSelectionListener(new SenderListSelectionListener());
+            receiverTable.getSelectionModel().addListSelectionListener(new ReceiverListSelectionListener());
 
-        transferView.setTableReceiverAccounts(receiverTable);
-        transferView.setTableSenderAccounts(senderTable);
+            transferView.setTableReceiverAccounts(receiverTable);
+            transferView.setTableSenderAccounts(senderTable);
+        }
     }
 
 }

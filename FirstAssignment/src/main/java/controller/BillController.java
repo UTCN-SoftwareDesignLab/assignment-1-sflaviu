@@ -4,6 +4,7 @@ import model.Account;
 import model.Client;
 import model.validation.Notification;
 import service.account.AccountService;
+import service.activity.ActivityService;
 import service.client.ClientService;
 import view.BillView;
 
@@ -13,10 +14,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class BillController extends TableBasedController{
 
@@ -28,7 +26,10 @@ public class BillController extends TableBasedController{
     private Long accountId;
     private String clientName;
 
-    public BillController(BillView billView, HashMap<String, Controller> nextControllers, AccountService accountService, ClientService clientService) {
+    private Long activeUserId;
+
+    public BillController(BillView billView, HashMap<String, Controller> nextControllers, AccountService accountService, ClientService clientService,  ActivityService bigBrother) {
+        super(bigBrother);
         this.billView = billView;
         this.nextControllers = nextControllers;
         this.accountService = accountService;
@@ -58,6 +59,8 @@ public class BillController extends TableBasedController{
         billView.setVisible(true);
 
     }
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
 
     private class AccountsListSelectionListener implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
@@ -82,6 +85,8 @@ public class BillController extends TableBasedController{
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            Long clientId=Long.parseLong(billView.getSelectedClientId());
+
             Notification<Boolean> inputNotification=checkInput();
             if(!inputNotification.hasErrors())
             {
@@ -94,6 +99,8 @@ public class BillController extends TableBasedController{
                     } else {
                         paymentComplete();
                         populateAccountsTables(accountService.findAll());
+                        logActivity("Payed "+billView.getSelectedBill()+" bill",activeUserId,convertToSqlDate(new Date()),clientId,accountId);
+
                     }
                 }
             }
@@ -149,11 +156,12 @@ public class BillController extends TableBasedController{
 
     private void populateAccountsTables(List<Account> accountsList)
     {
+        if(accountsList.size()>0) {
+            JTable accountsTable = populateTable(accountsList);
 
-        JTable accountsTable=populateTable(accountsList);
+            accountsTable.getSelectionModel().addListSelectionListener(new AccountsListSelectionListener());
 
-        accountsTable.getSelectionModel().addListSelectionListener(new AccountsListSelectionListener());
-
-        billView.setTableAccounts(accountsTable);
+            billView.setTableAccounts(accountsTable);
+        }
     }
 }

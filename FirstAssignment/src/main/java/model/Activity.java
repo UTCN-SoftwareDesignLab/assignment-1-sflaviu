@@ -57,4 +57,14 @@ public class Activity {
     public void setModifiedAccountId(Long modifiedAccountId) {
         this.modifiedAccountId = modifiedAccountId;
     }
+
+    public String toString()
+    {
+        String activityString=" ";
+        activityString=activityString.concat("Activity type: "+getType());
+        activityString=activityString.concat("\nDate: "+getDate().toString());
+        activityString=activityString.concat("\nModified account: "+getModifiedAccountId());
+        activityString=activityString.concat("\nModified client: "+getModifiedClientId());
+        return activityString;
+    }
 }

@@ -10,6 +10,7 @@ public class AdminOperationsController implements Controller {
 
     private AdminOperationsView adminView;
     private Map<String,Controller> nextControllers;
+    private Long activeUserId;
 
     public AdminOperationsController(AdminOperationsView adminView, Map<String,Controller> nextControllers) {
         this.adminView = adminView;
@@ -29,6 +30,7 @@ public class AdminOperationsController implements Controller {
     @Override
     public void openNextController(String next) {
         nextControllers.get(next).showGUI();
+        nextControllers.get(next).setActiveUser(activeUserId);
     }
 
     @Override
@@ -38,4 +40,7 @@ public class AdminOperationsController implements Controller {
 
     @Override
     public void showGUI() { adminView.setVisible(true); }
+
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
 }

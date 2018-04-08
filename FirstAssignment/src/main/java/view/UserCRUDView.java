@@ -60,9 +60,6 @@ public class UserCRUDView extends JFrame {
         btnDeleteEmployee.setBounds(401, 203, 185, 23);
         contentPane.add(btnDeleteEmployee);
 
-        btnGenerateReport = new JButton("Generate Report");
-        btnGenerateReport.setBounds(401, 49, 185, 23);
-        contentPane.add(btnGenerateReport);
 
         lblUsername = new JLabel("Username");
         lblUsername.setBounds(31, 237, 87, 14);
@@ -112,9 +109,5 @@ public class UserCRUDView extends JFrame {
     public void setBtnUpdateEmployeeListener(ActionListener al)
     {
         btnUpdateEmployee.addActionListener(al);
-    }
-    public void setBtnGenerateReportListener(ActionListener al)
-    {
-        btnGenerateReport.addActionListener(al);
     }
 }

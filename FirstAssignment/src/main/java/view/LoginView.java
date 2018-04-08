@@ -52,4 +52,11 @@ public class LoginView extends JFrame {
         btnRegister.addActionListener(registerButtonListener);
     }
 
+    public void emptyUsername() {
+        this.tfUsername.setText("");
+    }
+
+    public void emptyPassword() {
+        this.tfPassword.setText("");
+    }
 }

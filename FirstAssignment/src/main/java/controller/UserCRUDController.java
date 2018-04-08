@@ -2,6 +2,7 @@ package controller;
 
 import model.User;
 import model.validation.Notification;
+import service.activity.ActivityService;
 import service.user.UserService;
 import view.UserCRUDView;
 
@@ -11,18 +12,17 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserCRUDController extends TableBasedController<User> {
 
     private UserCRUDView userView;
     private Map<String,Controller> nextControllers;
     private UserService userService;
+    public Long activeUserId;
 
-    public UserCRUDController(UserCRUDView userView, Map<String, Controller> nextControllers, UserService userService) {
+    public UserCRUDController(UserCRUDView userView, Map<String, Controller> nextControllers, UserService userService, ActivityService bigBrother) {
+        super(bigBrother);
         this.userView = userView;
         this.nextControllers = nextControllers;
         this.userService = userService;
@@ -60,8 +60,10 @@ public class UserCRUDController extends TableBasedController<User> {
 
             if(!userService.remove(userId))
                 JOptionPane.showMessageDialog(userView.getContentPane(), "Deleting the user failed! Please try again later");
-            else
+            else {
                 JOptionPane.showMessageDialog(userView.getContentPane(), "Delete succesfull");
+
+            }
         }
     }
     private class AddUserButtonListener implements ActionListener {
@@ -86,7 +88,9 @@ public class UserCRUDController extends TableBasedController<User> {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Notification<Boolean> userNotification=userService.update(userView.getSelectedUserId(),userView.getTxtUsername(),userView.getTxtPassword());
+
+            Long userId=userView.getSelectedUserId();
+            Notification<Boolean> userNotification=userService.update(userId,userView.getTxtUsername(),userView.getTxtPassword());
             if (userNotification.hasErrors()) {
                 JOptionPane.showMessageDialog(userView.getContentPane(), userNotification.getFormattedErrors());
             } else {
@@ -95,6 +99,8 @@ public class UserCRUDController extends TableBasedController<User> {
                 } else {
                     JOptionPane.showMessageDialog(userView.getContentPane(), "Updating successful!");
                     populateUsersTable(userService.findAll());
+                    logActivity("Updated user ",activeUserId,convertToSqlDate(new Date()),null,userId);
+
                 }
             }
         }
@@ -107,10 +113,14 @@ public class UserCRUDController extends TableBasedController<User> {
     }
     private void populateUsersTable(List<User> usersList)
     {
-        JTable usersTable=populateTable(usersList);
+        if(usersList.size()>0) {
+            JTable usersTable = populateTable(usersList);
 
-        usersTable.getSelectionModel().addListSelectionListener(new UserListSelectionListener());
+            usersTable.getSelectionModel().addListSelectionListener(new UserListSelectionListener());
 
-        userView.setUsersTable(usersTable);
+            userView.setUsersTable(usersTable);
+        }
     }
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
 }

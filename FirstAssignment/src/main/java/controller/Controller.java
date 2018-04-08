@@ -5,6 +5,7 @@ package controller;
 public interface Controller {
 
     void openNextController(String next);
+    void setActiveUser(Long userId);
     void hideGUI();
     void showGUI();
 }

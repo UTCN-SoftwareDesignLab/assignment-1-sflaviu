@@ -41,7 +41,7 @@ public class ActivityBuilder implements Builder<Activity>{
     }
 
     public ActivityBuilder setModifiedAccountId(Long modifiedId) {
-        activity.setModifiedClientId(modifiedId);
+        activity.setModifiedAccountId(modifiedId);
         return this;
     }
 

@@ -69,26 +69,31 @@ public class main {
         // System.out.println(acts.findAll().get(0).getType());
 
 */
-        Controller clientController=new ClientCRUDController(new ClientCRUDView(),cf.getClientService(),new HashMap<>());
-        Controller transferController=new TransferController(new TransferView(),new HashMap<>(),cf.getAccountService());
+        Controller clientController=new ClientCRUDController(new ClientCRUDView(),cf.getClientService(),new HashMap<>(),cf.getActivityService());
+        Controller transferController=new TransferController(new TransferView(),new HashMap<>(),cf.getAccountService(),cf.getActivityService());
 
-        Controller payBillController=new BillController(new BillView(),new HashMap<>(),cf.getAccountService(),cf.getClientService());
+        Controller payBillController=new BillController(new BillView(),new HashMap<>(),cf.getAccountService(),cf.getClientService(),cf.getActivityService());
 
-        Controller userController=new UserCRUDController(new UserCRUDView(),new HashMap<>(),cf.getUserService());
+        Controller userController=new UserCRUDController(new UserCRUDView(),new HashMap<>(),cf.getUserService(),cf.getActivityService());
 
-        Controller accountController=new AccountCRUDController(new AccountCRUDView(),new HashMap<>(),cf.getAccountService());
+        Controller reportController=new ReportController(new ReportView(),new HashMap<>(),cf.getUserService(),cf.getActivityService());
+
+
+        Controller accountController=new AccountCRUDController(new AccountCRUDView(),new HashMap<>(),cf.getAccountService(),cf.getActivityService());
         HashMap<String, Controller> nextAdmin=new HashMap<>();
         nextAdmin.put(CRUD_CLIENT,clientController);
         nextAdmin.put(TRANSFER_MONEY,transferController);
         nextAdmin.put(PAY_BILLS,payBillController);
         nextAdmin.put(CRUD_EMPLOYEE,userController);
         nextAdmin.put(CRUD_ACCOUNTS,accountController);
+        nextAdmin.put(GENERATE_REPORT,reportController);
 
         HashMap<String, Controller> nextUser=new HashMap<>();
         nextUser.put(CRUD_CLIENT,clientController);
         nextUser.put(TRANSFER_MONEY,transferController);
         nextUser.put(PAY_BILLS,payBillController);
         nextUser.put(CRUD_ACCOUNTS,accountController);
+        nextUser.put(GENERATE_REPORT,reportController);
 
         AdminOperationsController ac=new AdminOperationsController(new AdminOperationsView(),nextAdmin);
         UserOperationsController uc=new UserOperationsController(new UserOperationsView(),nextUser);
@@ -97,8 +102,10 @@ public class main {
         nextLogIn.put(ADMINISTRATOR,ac);
         nextLogIn.put(EMPLOYEE,uc);
 
+        LoginController loginController=new LoginController(new LoginView(), cf.getAuthenticationService(),nextLogIn);
 
-        new LoginController(new LoginView(), cf.getAuthenticationService(),nextLogIn);
+        nextAdmin.put(LOG_OUT,loginController);
+        nextUser.put(LOG_OUT,loginController);
 
     }
 }

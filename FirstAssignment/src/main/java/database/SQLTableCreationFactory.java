@@ -85,8 +85,8 @@ public class SQLTableCreationFactory {
                         "  type VARCHAR(200) NOT NULL," +
                         "  us_id INT NOT NULL," +
                         "  date DATE NOT NULL," +
-                        "  cl_id INT,"+
-                        "  acc_id INT,"+
+                        "  cl_id INT NULL,"+
+                        "  acc_id INT NULL,"+
                         "  PRIMARY KEY (id)," +
                         "  UNIQUE INDEX id_UNIQUE (id ASC)," +
                         "  CONSTRAINT cl_id" +

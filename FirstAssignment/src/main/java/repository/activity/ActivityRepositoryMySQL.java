@@ -81,7 +81,7 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
 
         try {
             statement = connection.createStatement();
-            String fetchActivitySql = "Select * from " + ACTIVITY + " where `cl_id`=\'" + userId + "\'";
+            String fetchActivitySql = "Select * from " + ACTIVITY + " where `us_id`=\'" + userId + "\'";
             ResultSet activityResultSet = statement.executeQuery(fetchActivitySql);
 
             activities=new ArrayList<>();
@@ -104,7 +104,7 @@ public class ActivityRepositoryMySQL implements ActivityRepository {
             PreparedStatement insertActivityStatement = connection
                     .prepareStatement("INSERT INTO "+ACTIVITY+" values (null, ?, ?, ?, ?, ?)");
             insertActivityStatement.setString(1, activity.getType());
-            insertActivityStatement.setLong(2, activity.getModifiedClientId());
+            insertActivityStatement.setLong(2, activity.getPerformerId());
             insertActivityStatement.setDate(3, activity.getDate());
             insertActivityStatement.setObject(4, activity.getModifiedClientId());
             insertActivityStatement.setObject(5, activity.getModifiedAccountId());

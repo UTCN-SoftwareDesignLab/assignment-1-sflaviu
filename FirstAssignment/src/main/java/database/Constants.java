@@ -44,6 +44,8 @@ public class Constants {
         public static final String PAY_BILLS = "pay_bills";
         public static final String TRANSFER_MONEY= "transfer_money";
         public static final String CRUD_ACCOUNTS= "crud_accounts";
+        public static final String LOG_OUT="log_out";
+        public static final String GENERATE_REPORT="generate_report";
     }
     public static class Rights {
         public static final String CREATE_USER = "create_user";

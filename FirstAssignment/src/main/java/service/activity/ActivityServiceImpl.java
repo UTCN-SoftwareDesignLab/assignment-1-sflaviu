@@ -31,9 +31,9 @@ public class ActivityServiceImpl implements ActivityService {
 
 
     @Override
-    public Notification<Boolean> save(String type, User user, Date date,Long clientId,Long accountId)
+    public Notification<Boolean> save(String type, Long userId, Date date,Long clientId,Long accountId)
     {
-        Activity activity=new ActivityBuilder().setType(type).setPerformer(clientId).setDate(date).build();
+        Activity activity=new ActivityBuilder().setPerformer(userId).setType(type).setModifiedAccountId(accountId).setModifiedClientId(clientId).setDate(date).build();
 
         Validator activityValidator=new ActivityValidator(activity);
 
@@ -50,7 +50,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<Activity> findByPerformer(User performer) {
-        return activityRepository.findByPerformerId(performer.getId());
+    public List<Activity> findByPerformer(Long ownerId) {
+        return activityRepository.findByPerformerId(ownerId);
     }
 }

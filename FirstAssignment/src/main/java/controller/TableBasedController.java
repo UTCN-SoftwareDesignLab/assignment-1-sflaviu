@@ -1,16 +1,25 @@
 package controller;
 
-import model.Account;
+import model.Activity;
+import service.activity.ActivityService;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class TableBasedController<T> implements Controller{
+abstract class TableBasedController<T> implements Controller{
 
-    protected JTable populateTable(List<T> inputList) {
+    ActivityService bigBrother;
+
+    TableBasedController (ActivityService bigBrother)
+    {
+        this.bigBrother=bigBrother;
+    }
+
+    JTable populateTable(List<T> inputList) {
         String[][] tableData;
 
         ArrayList<String> firstRow = new ArrayList<>();
@@ -41,7 +50,17 @@ public abstract class TableBasedController<T> implements Controller{
             }
             row++;
         }
-        JTable table = new JTable(tableData, firstRow.toArray());
-        return table;
+        return new JTable(tableData, firstRow.toArray());
     }
+
+    void logActivity(String type, Long userId, Date date,Long clientId,Long accountId)
+    {
+        bigBrother.save(type,userId,date,clientId,accountId);
+    }
+
+    java.sql.Date convertToSqlDate(java.util.Date date)
+    {
+        return new java.sql.Date(date.getTime());
+    }
+
 }

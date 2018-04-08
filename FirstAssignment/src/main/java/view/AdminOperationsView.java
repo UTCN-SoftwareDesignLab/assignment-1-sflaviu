@@ -48,16 +48,28 @@ public class AdminOperationsView extends JFrame {
         contentPane.add(btnPayBills);
 
         JButton btnManageEmployees = new JButton("Manage Employees");
-        btnManageEmployees.setBounds(319, 138, 213, 63);
+        btnManageEmployees.setBounds(321, 122, 213, 63);
         btnManageEmployees.setActionCommand(CRUD_EMPLOYEE);
         btnsAdminOperations.add(btnManageEmployees);
         contentPane.add(btnManageEmployees);
 
         JButton btnCrudAccounts = new JButton("CRUD accounts");
-        btnCrudAccounts.setBounds(62, 138, 213, 63);
+        btnCrudAccounts.setBounds(60, 122, 213, 63);
         btnCrudAccounts.setActionCommand(CRUD_ACCOUNTS);
         btnsAdminOperations.add(btnCrudAccounts);
         contentPane.add(btnCrudAccounts);
+
+        JButton btnLogOut = new JButton("Log out");
+        btnLogOut.setBounds(60, 216, 213, 63);
+        btnLogOut.setActionCommand(LOG_OUT);
+        btnsAdminOperations.add(btnLogOut);
+        contentPane.add(btnLogOut);
+
+        JButton btnReport = new JButton("Generate Report");
+        btnReport.setBounds(321, 216, 213, 63);
+        btnReport.setActionCommand(GENERATE_REPORT);
+        btnsAdminOperations.add(btnReport);
+        contentPane.add(btnReport);
 
     }
     public void setBtnListeners(ActionListener al)

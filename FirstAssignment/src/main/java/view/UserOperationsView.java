@@ -23,7 +23,7 @@ public class UserOperationsView extends JFrame {
     public UserOperationsView() {
         setTitle("User operations");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 624, 261);
+        setBounds(100, 100, 624, 329);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -54,6 +54,12 @@ public class UserOperationsView extends JFrame {
         btnManageAccounts.setActionCommand(CRUD_ACCOUNTS);
         btnsUserOperations.add(btnManageAccounts);
         contentPane.add(btnManageAccounts);
+
+        JButton btnLogOut = new JButton("Log out");
+        btnLogOut.setBounds(189, 215, 240, 64);
+        btnLogOut.setActionCommand(LOG_OUT);
+        btnsUserOperations.add(btnLogOut);
+        contentPane.add(btnLogOut);
     }
 
     public void setBtnListeners(ActionListener al)

@@ -1,8 +1,10 @@
 package controller;
 
 import model.Account;
+import model.Activity;
 import model.validation.Notification;
 import service.account.AccountService;
+import service.activity.ActivityService;
 import view.AccountCRUDView;
 
 import javax.swing.*;
@@ -24,8 +26,11 @@ public class AccountCRUDController extends TableBasedController<Account> {
     private AccountCRUDView accountView;
     private Map<String,Controller> nextControllers;
     private AccountService accountService;
+    private Long activeUserId;
 
-    public AccountCRUDController(AccountCRUDView accountView, Map<String, Controller> nextControllers, AccountService accountService) {
+    public AccountCRUDController(AccountCRUDView accountView, Map<String, Controller> nextControllers, AccountService accountService, ActivityService bigBrother) {
+
+        super(bigBrother);
         this.accountView = accountView;
         this.nextControllers = nextControllers;
         this.accountService = accountService;
@@ -39,6 +44,7 @@ public class AccountCRUDController extends TableBasedController<Account> {
     public void openNextController(String next) {
         hideGUI();
         nextControllers.get(next).showGUI();
+        nextControllers.get(next).setActiveUser(activeUserId);
     }
 
     @Override
@@ -52,6 +58,8 @@ public class AccountCRUDController extends TableBasedController<Account> {
         populateAccountTable(accountService.findAll());
 
     }
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
 
     private class AccountListSelectionListener implements ListSelectionListener {
         public void valueChanged(ListSelectionEvent e) {
@@ -65,8 +73,6 @@ public class AccountCRUDController extends TableBasedController<Account> {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
 
-            Notification<Boolean> accountNotification;
-
             Long accountId;
             try {
                 accountId=accountView.getSelectedAccountId();
@@ -75,6 +81,7 @@ public class AccountCRUDController extends TableBasedController<Account> {
                 else {
                     JOptionPane.showMessageDialog(accountView.getContentPane(), "Delete successful");
                     populateAccountTable(accountService.findAll());
+                    logActivity("Delete Account",activeUserId,convertToSqlDate(new Date()),null,accountId);
                 }
                }
             catch(IndexOutOfBoundsException ie)
@@ -109,6 +116,8 @@ public class AccountCRUDController extends TableBasedController<Account> {
                     } else {
                         JOptionPane.showMessageDialog(accountView.getContentPane(), "Adding successful!");
                         populateAccountTable(accountService.findAll());
+
+                       // logActivity("Create account",activeUserId,new Date(),accountNotification.getResult());
                     }
                 }
             }
@@ -126,46 +135,42 @@ public class AccountCRUDController extends TableBasedController<Account> {
 
             Notification<Boolean> inputNotification=checkInput();
 
-            if(!inputNotification.hasErrors()) {
-                Date date = null;
-                try {
-                    date = new SimpleDateFormat("yyyy-MM-dd").parse(accountView.getTxtDate());
-                } catch (ParseException pe) {
-                    pe.printStackTrace();
-                }
-                Notification<Boolean> accountNotification;
-
-                try {
-                     accountNotification = accountService.update(accountView.getSelectedAccountId(), accountView.getTxtType(), Integer.parseInt(accountView.getTxtBalance()), convertToSqlDate(date));
-                }
-                catch(IndexOutOfBoundsException ie)
-                {
-                    accountNotification=new Notification<>();
-                    accountNotification.addError("No row selected!");
-                }
-
-                if (accountNotification.hasErrors()) {
-                    JOptionPane.showMessageDialog(accountView.getContentPane(), accountNotification.getFormattedErrors());
-                } else {
-                    if (!accountNotification.getResult()) {
-                        JOptionPane.showMessageDialog(accountView.getContentPane(), "Updating the account not successful, please try again later.");
-                    } else {
-                        JOptionPane.showMessageDialog(accountView.getContentPane(), "Updating successful!");
-                        populateAccountTable(accountService.findAll());
+                if (!inputNotification.hasErrors()) {
+                    Date date = null;
+                    try {
+                        date = new SimpleDateFormat("yyyy-MM-dd").parse(accountView.getTxtDate());
+                    } catch (ParseException pe) {
+                        pe.printStackTrace();
                     }
+                    Notification<Boolean> accountNotification;
+
+                    Long accountId = 0L;
+                    try {
+                        accountId = accountView.getSelectedAccountId();
+                        accountNotification = accountService.update(accountId, accountView.getTxtType(), Integer.parseInt(accountView.getTxtBalance()), convertToSqlDate(date));
+
+                    } catch (Exception ie) {
+                        accountNotification = new Notification<>();
+                        accountNotification.addError("No row selected!");
+                    }
+
+                    if (accountNotification.hasErrors()) {
+                        JOptionPane.showMessageDialog(accountView.getContentPane(), accountNotification.getFormattedErrors());
+                    } else {
+                        if (!accountNotification.getResult()) {
+                            JOptionPane.showMessageDialog(accountView.getContentPane(), "Updating the account not successful, please try again later.");
+                        } else {
+                            JOptionPane.showMessageDialog(accountView.getContentPane(), "Updating successful!");
+                            populateAccountTable(accountService.findAll());
+                            logActivity("Update Account", activeUserId, convertToSqlDate(new Date()),null,accountId);
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(accountView.getContentPane(), inputNotification.getFormattedErrors());
                 }
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(accountView.getContentPane(),inputNotification.getFormattedErrors());
-            }
         }
     }
 
-    private java.sql.Date convertToSqlDate(Date date)
-    {
-        return new java.sql.Date(date.getTime());
-    }
     private Notification<Boolean> checkInput()
     {
         Notification<Boolean> inputNotification=new Notification<>();
@@ -177,7 +182,6 @@ public class AccountCRUDController extends TableBasedController<Account> {
             inputNotification.addError("The balance is not a number!");
         }
 
-        System.out.println(accountView.getTxtDate());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         try {
             df.parse(accountView.getTxtDate());
@@ -189,9 +193,11 @@ public class AccountCRUDController extends TableBasedController<Account> {
     }
     private void populateAccountTable(List<Account> accounts)
     {
-        JTable accountsTable=populateTable(accounts);
-        accountsTable.getSelectionModel().addListSelectionListener(new AccountListSelectionListener());
+        if(accounts.size()>0) {
+            JTable accountsTable = populateTable(accounts);
+            accountsTable.getSelectionModel().addListSelectionListener(new AccountListSelectionListener());
 
-        accountView.setAccountsTable(accountsTable);
+            accountView.setAccountsTable(accountsTable);
+        }
     }
 }

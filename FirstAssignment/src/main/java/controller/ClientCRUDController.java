@@ -2,6 +2,7 @@ package controller;
 
 import model.Client;
 import model.validation.Notification;
+import service.activity.ActivityService;
 import service.client.ClientService;
 import view.ClientCRUDView;
 
@@ -11,18 +12,18 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClientCRUDController extends TableBasedController<Client> {
 
     private ClientCRUDView clientView;
     private Map<String,Controller> nextControllers;
     private ClientService clientService;
+    private Long activeUserId;
 
-    public ClientCRUDController(ClientCRUDView clientView, ClientService clientService, Map<String, Controller> nextControllers ) {
+    public ClientCRUDController(ClientCRUDView clientView, ClientService clientService, Map<String, Controller> nextControllers, ActivityService bigBrother ) {
+
+        super(bigBrother);
         this.clientView = clientView;
         this.nextControllers=nextControllers;
         this.clientService=clientService;
@@ -35,6 +36,7 @@ public class ClientCRUDController extends TableBasedController<Client> {
     public void openNextController(String next) {
         hideGUI();
         nextControllers.get(next).showGUI();
+        nextControllers.get(next).setActiveUser(activeUserId);
     }
 
     @Override
@@ -48,6 +50,8 @@ public class ClientCRUDController extends TableBasedController<Client> {
         clientView.setVisible(true);
 
     }
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
 
     private class ClientListSelectionListener implements ListSelectionListener  {
         public void valueChanged(ListSelectionEvent e) {
@@ -77,7 +81,10 @@ public class ClientCRUDController extends TableBasedController<Client> {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Notification<Boolean> clientNotification=clientService.update(clientView.getSelectedClientId(),clientView.getTxtName(),clientView.getTxtCnp(),clientView.getTxtCardId(),clientView.getTxtAddress());
+
+            Long clientId=clientView.getSelectedClientId();
+
+            Notification<Boolean> clientNotification=clientService.update(clientId,clientView.getTxtName(),clientView.getTxtCnp(),clientView.getTxtCardId(),clientView.getTxtAddress());
             if (clientNotification.hasErrors()) {
                 JOptionPane.showMessageDialog(clientView.getContentPane(), clientNotification.getFormattedErrors());
             } else {
@@ -86,17 +93,21 @@ public class ClientCRUDController extends TableBasedController<Client> {
                 } else {
                     JOptionPane.showMessageDialog(clientView.getContentPane(), "Updating successful!");
                     populateClientTable(clientService.findAll());
+                    logActivity("Update Client",activeUserId,convertToSqlDate(new Date()),clientId,null);
+
                 }
             }
         }
     }
     private void populateClientTable(List<Client> clientList)
     {
-        JTable clientsTable=populateTable(clientList);
+        if(clientList.size()>0) {
+            JTable clientsTable = populateTable(clientList);
 
-        clientsTable.getSelectionModel().addListSelectionListener(new ClientListSelectionListener());
+            clientsTable.getSelectionModel().addListSelectionListener(new ClientListSelectionListener());
 
-        clientView.setClientsTable(clientsTable);
+            clientView.setClientsTable(clientsTable);
+        }
     }
 }
 

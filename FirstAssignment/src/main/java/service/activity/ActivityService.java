@@ -12,7 +12,7 @@ public interface ActivityService {
 
     List<Activity> findAll();
 
-    Notification<Boolean> save(String type, User user, Date date,Long clientId,Long accountId);
+    Notification<Boolean> save(String type, Long userId, Date date,Long clientId,Long accountId);
 
-    List<Activity> findByPerformer(User performer);
+    List<Activity> findByPerformer(Long ownerId);
 }

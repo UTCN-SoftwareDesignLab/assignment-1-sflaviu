@@ -18,60 +18,57 @@ public class ClientCRUDView extends JFrame {
 
     private JButton btnAddClient;
     private JButton btnUpdateClient;
-    private JButton btnFindAccountsFor;
+   // private JButton btnFindAccountsFor;
 
     private JTable tableClients;
 
-    /**
-	 * Create the frame.
-	 */
 	public ClientCRUDView() {
 		setTitle("Client");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 632, 401);
+        setBounds(100, 100, 732, 401);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		scrollPane = new JScrollPane(tableClients);
-        scrollPane.setBounds(21, 24, 428, 204);
+        scrollPane.setBounds(21, 24, 505, 204);
 		contentPane.add(scrollPane);
 		
 		txtName = new JTextField();
-        txtName.setBounds(21, 275, 86, 20);
+        txtName.setBounds(10, 275, 97, 20);
 		contentPane.add(txtName);
 		txtName.setColumns(10);
 		
 		txtCnp = new JTextField();
-        txtCnp.setBounds(117, 275, 111, 20);
+        txtCnp.setBounds(117, 275, 124, 20);
 		contentPane.add(txtCnp);
 		txtCnp.setColumns(10);
 		
 		txtCardId = new JTextField();
-        txtCardId.setBounds(238, 275, 115, 20);
+        txtCardId.setBounds(251, 275, 141, 20);
 		contentPane.add(txtCardId);
 		txtCardId.setColumns(10);
 		
 		txtAddress = new JTextField();
-        txtAddress.setBounds(357, 275, 92, 20);
+        txtAddress.setBounds(402, 275, 147, 20);
 		contentPane.add(txtAddress);
 		txtAddress.setColumns(10);
 
 		btnAddClient = new JButton("Add Client");
-        btnAddClient.setBounds(459, 254, 147, 23);
+        btnAddClient.setBounds(559, 188, 147, 23);
 		contentPane.add(btnAddClient);
 		
 		btnUpdateClient = new JButton("Update Client");
-        btnUpdateClient.setBounds(459, 299, 147, 22);
+        btnUpdateClient.setBounds(559, 301, 147, 22);
 		contentPane.add(btnUpdateClient);
-		
+		/*
 		btnFindAccountsFor = new JButton("Find Accounts");
-        btnFindAccountsFor.setBounds(459, 35, 147, 23);
-		contentPane.add(btnFindAccountsFor);
+        btnFindAccountsFor.setBounds(600, 35, 147, 23);
+		contentPane.add(btnFindAccountsFor);*/
 
         JLabel lblName = new JLabel("Name");
-        lblName.setBounds(21, 250, 68, 14);
+        lblName.setBounds(10, 250, 68, 14);
         contentPane.add(lblName);
 
         JLabel lblCnp = new JLabel("Cnp");
@@ -79,11 +76,11 @@ public class ClientCRUDView extends JFrame {
         contentPane.add(lblCnp);
 
         JLabel lblCardId = new JLabel("Card ID");
-        lblCardId.setBounds(238, 250, 68, 14);
+        lblCardId.setBounds(248, 250, 86, 14);
         contentPane.add(lblCardId);
 
         JLabel lblAddress = new JLabel("Address");
-        lblAddress.setBounds(357, 250, 57, 14);
+        lblAddress.setBounds(403, 250, 123, 14);
         contentPane.add(lblAddress);
 	}
 
@@ -118,9 +115,9 @@ public class ClientCRUDView extends JFrame {
     public void setBtnAddClientListener(ActionListener al) {
         btnAddClient.addActionListener(al);
     }
-    public void setBtnFindAccountsForListener(ActionListener al) {
+  /* public void setBtnFindAccountsForListener(ActionListener al) {
         btnFindAccountsFor.addActionListener(al);
-    }
+    }*/
 
     public int getSelectedClient()
     {

@@ -10,6 +10,7 @@ import java.util.Map;
 public class UserOperationsController implements Controller {
     private UserOperationsView userView;
     private Map<String,Controller> nextControllers;
+    private Long activeUserId;
 
     public UserOperationsController(UserOperationsView userView, Map<String,Controller> nextControllers) {
         this.userView = userView;
@@ -29,6 +30,7 @@ public class UserOperationsController implements Controller {
     @Override
     public void openNextController(String next) {
         nextControllers.get(next).showGUI();
+        nextControllers.get(next).setActiveUser(activeUserId);
     }
 
     @Override
@@ -38,4 +40,7 @@ public class UserOperationsController implements Controller {
 
     @Override
     public void showGUI() { userView.setVisible(true); }
+
+    @Override
+    public void setActiveUser(Long userId){this.activeUserId=userId;}
 }
