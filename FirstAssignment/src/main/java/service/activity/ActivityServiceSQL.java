@@ -16,11 +16,11 @@ import service.activity.ActivityService;
 import java.sql.Date;
 import java.util.List;
 
-public class ActivityServiceImpl implements ActivityService {
+public class ActivityServiceSQL implements ActivityService {
 
     private final ActivityRepository activityRepository;
 
-    public ActivityServiceImpl(ActivityRepository activityRepository) {
+    public ActivityServiceSQL(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 

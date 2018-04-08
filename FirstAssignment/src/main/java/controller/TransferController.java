@@ -81,6 +81,7 @@ public class TransferController extends TableBasedController<Account>{
             if(!inputNotification.hasErrors())
             {
                 int sum=Integer.parseInt(transferView.getTxtSum());
+
                 Notification<Boolean> transferNotification = accountService.transfer(receiverId,senderId,sum);
                 if (transferNotification.hasErrors()) {
                     JOptionPane.showMessageDialog(transferView.getContentPane(), transferNotification.getFormattedErrors());

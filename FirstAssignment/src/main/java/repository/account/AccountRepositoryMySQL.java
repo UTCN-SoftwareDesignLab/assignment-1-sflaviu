@@ -2,6 +2,7 @@ package repository.account;
 
 import model.Account;
 import model.builder.AccountBuilder;
+import model.validation.Notification;
 import repository.EntityNotFoundException;
 
 import java.sql.*;
@@ -65,7 +66,8 @@ public class AccountRepositoryMySQL implements AccountRepository {
     }
 
     @Override
-    public boolean save(Account account,Long clientId) {
+    public Notification<Account> save(Account account, Long clientId) {
+        Notification<Account> notificationSaveAccount=new Notification<>();
         try {
             PreparedStatement insertAccountStatement = connection
                     .prepareStatement("INSERT INTO "+ACCOUNT+" values (null, ?, ?, ?, ?)");
@@ -80,10 +82,13 @@ public class AccountRepositoryMySQL implements AccountRepository {
             long accountId = rs.getLong(1);
             account.setId(accountId);
 
-            return true;
+            notificationSaveAccount.setResult(account);
+            return notificationSaveAccount;
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            notificationSaveAccount.addError("Saving account not succesfull");
+            return notificationSaveAccount;
         }
 
     }

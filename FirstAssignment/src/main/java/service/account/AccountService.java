@@ -12,7 +12,9 @@ public interface AccountService {
 
     List<Account> findAll();
 
-    Notification<Boolean> save(String type,Integer balance,String clientCNP, Date creation);
+    Notification<Account> findById(Long id);
+
+    Notification<Account> save(String type,Integer balance,String clientCNP, Date creation);
 
     Notification<Boolean> update(Long id,String type,Integer balance, Date creation);
 

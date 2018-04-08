@@ -1,6 +1,7 @@
 package repository.account;
 
 import model.Account;
+import model.validation.Notification;
 import repository.EntityNotFoundException;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface AccountRepository {
 
     Account findById(Long id) throws EntityNotFoundException;
 
-    boolean save(Account account,Long clientId);
+    Notification<Account> save(Account account, Long clientId);
 
     List<Account> findAccountsByOwnerId(Long ownerId);
 

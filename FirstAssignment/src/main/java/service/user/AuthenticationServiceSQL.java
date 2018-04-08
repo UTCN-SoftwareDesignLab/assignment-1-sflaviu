@@ -16,11 +16,11 @@ import static database.Constants.Roles.EMPLOYEE;
 /**
  * Created by Alex on 11/03/2017.
  */
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceSQL implements AuthenticationService {
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
 
-    public AuthenticationServiceImpl(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
+    public AuthenticationServiceSQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
         this.userRepository = userRepository;
         this.rightsRolesRepository = rightsRolesRepository;
     }
@@ -51,11 +51,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Notification<User> login(String username, String password) throws AuthenticationException {
         return userRepository.findByUsernameAndPassword(username, encodePassword(password));
-    }
-
-    @Override
-    public boolean logout(User user) {
-        return false;
     }
 
     public String encodePassword(String password) {

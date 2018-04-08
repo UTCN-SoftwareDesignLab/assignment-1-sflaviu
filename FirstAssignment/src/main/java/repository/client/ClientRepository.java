@@ -15,7 +15,7 @@ public interface ClientRepository {
 
     Client findByCnp(String cnp) throws EntityNotFoundException;
 
-    boolean save(Client client);
+    Notification<Client> save(Client client);
 
     boolean update(Long id,Client client);
 

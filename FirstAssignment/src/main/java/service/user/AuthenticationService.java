@@ -15,6 +15,4 @@ public interface AuthenticationService {
 
     String encodePassword(String password);
 
-    boolean logout(User user);
-
 }

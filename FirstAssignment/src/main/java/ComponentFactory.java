@@ -1,9 +1,5 @@
+import controller.*;
 import database.DBConnectionFactory;
-import model.builder.AccountBuilder;
-import model.builder.ActivityBuilder;
-import model.builder.ClientBuilder;
-import model.builder.UserBuilder;
-import model.validation.ClientValidator;
 import repository.account.AccountRepository;
 import repository.account.AccountRepositoryMySQL;
 import repository.activity.ActivityRepository;
@@ -15,17 +11,25 @@ import repository.security.RightsRolesRepositoryMySQL;
 import repository.user.UserRepository;
 import repository.user.UserRepositoryMySQL;
 import service.account.AccountService;
-import service.account.AccountServiceImpl;
+import service.account.AccountServiceSQL;
 import service.activity.ActivityService;
-import service.activity.ActivityServiceImpl;
+import service.activity.ActivityServiceSQL;
 import service.client.ClientService;
-import service.client.ClientServiceImpl;
+import service.client.ClientServiceSQL;
 import service.user.AuthenticationService;
-import service.user.AuthenticationServiceImpl;
+import service.user.AuthenticationServiceSQL;
 import service.user.UserService;
-import service.user.UserServiceImpl;
+import service.user.UserServiceSQL;
+import view.*;
 
 import java.sql.Connection;
+import java.util.HashMap;
+
+import static database.Constants.Operations.*;
+import static database.Constants.Operations.GENERATE_REPORT;
+import static database.Constants.Operations.LOG_OUT;
+import static database.Constants.Roles.ADMINISTRATOR;
+import static database.Constants.Roles.EMPLOYEE;
 
 /**
  * Created by Alex on 18/03/2017.
@@ -44,6 +48,13 @@ public class ComponentFactory {
     private final RightsRolesRepository rightsRolesRepository;
     private final ActivityRepository activityRepository;
 
+    private final Controller clientController;
+    private final Controller transferController;
+    private final Controller payBillController;
+    private final Controller userController;
+    private final Controller reportController;
+    private final Controller accountController;
+
     private static ComponentFactory instance;
 
     public static ComponentFactory instance(Boolean componentsForTests) {
@@ -59,56 +70,51 @@ public class ComponentFactory {
         this.rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
         this.userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
         this.accountRepository= new AccountRepositoryMySQL(connection);
-        this.clientRepository = new ClientRepositoryMySQL(connection,accountRepository);
-        this.activityRepository = new ActivityRepositoryMySQL(connection,userRepository);
+        this.clientRepository = new ClientRepositoryMySQL(connection);
+        this.activityRepository = new ActivityRepositoryMySQL(connection);
 
-        this.authenticationService=new AuthenticationServiceImpl(userRepository,rightsRolesRepository);
-        this.clientService=new ClientServiceImpl(clientRepository);
-        this.accountService=new AccountServiceImpl(accountRepository,clientService);
-        this.activityService= new ActivityServiceImpl(activityRepository) ;
-        this.userService=new UserServiceImpl(userRepository,rightsRolesRepository,authenticationService);
+        this.authenticationService=new AuthenticationServiceSQL(userRepository,rightsRolesRepository);
+        this.clientService=new ClientServiceSQL(clientRepository);
+        this.accountService=new AccountServiceSQL(accountRepository,clientService);
+        this.activityService= new ActivityServiceSQL(activityRepository) ;
+        this.userService=new UserServiceSQL(userRepository,rightsRolesRepository,authenticationService);
+
+
+        this.clientController=new ClientCRUDController(new ClientCRUDView(),clientService,new HashMap<>(),activityService);
+        this.transferController=new TransferController(new TransferView(),new HashMap<>(),accountService,activityService);
+        this.payBillController=new BillController(new BillView(),new HashMap<>(),accountService,clientService,activityService);
+        this.userController=new UserCRUDController(new UserCRUDView(),new HashMap<>(),userService,activityService);
+        this.reportController=new ReportController(new ReportView(),new HashMap<>(),userService,activityService);
+        this.accountController=new AccountCRUDController(new AccountCRUDView(),new HashMap<>(),accountService,activityService);
+
+        HashMap<String, Controller> nextAdmin=new HashMap<>();
+        nextAdmin.put(CRUD_CLIENT,clientController);
+        nextAdmin.put(TRANSFER_MONEY,transferController);
+        nextAdmin.put(PAY_BILLS,payBillController);
+        nextAdmin.put(CRUD_EMPLOYEE,userController);
+        nextAdmin.put(CRUD_ACCOUNTS,accountController);
+        nextAdmin.put(GENERATE_REPORT,reportController);
+
+        HashMap<String, Controller> nextUser=new HashMap<>();
+        nextUser.put(CRUD_CLIENT,clientController);
+        nextUser.put(TRANSFER_MONEY,transferController);
+        nextUser.put(PAY_BILLS,payBillController);
+        nextUser.put(CRUD_ACCOUNTS,accountController);
+        nextUser.put(GENERATE_REPORT,reportController);
+
+        AdminOperationsController adminOperationsController=new AdminOperationsController(new AdminOperationsView(),nextAdmin);
+        UserOperationsController userOperationsController=new UserOperationsController(new UserOperationsView(),nextUser);
+
+        HashMap<String, Controller> nextLogIn=new HashMap<>();
+        nextLogIn.put(ADMINISTRATOR,adminOperationsController);
+        nextLogIn.put(EMPLOYEE,userOperationsController);
+
+        LoginController loginController=new LoginController(new LoginView(), authenticationService,nextLogIn);
+
+        nextAdmin.put(LOG_OUT,loginController);
+        nextUser.put(LOG_OUT,loginController);
     }
 
-
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
-    public RightsRolesRepository getRightsRolesRepository() {
-        return rightsRolesRepository;
-    }
-
-    public ClientRepository getClientRepository() {
-        return clientRepository;
-    }
-
-    public AccountRepository getAccountRepository() {
-        return accountRepository;
-    }
-
-    public ActivityRepository getActivityRepository() {
-        return activityRepository;
-    }
-
-    public AuthenticationService getAuthenticationService() {
-        return authenticationService;
-    }
-
-    public AccountService getAccountService() {
-        return accountService;
-    }
-
-    public ActivityService getActivityService() {
-        return activityService;
-    }
-
-    public ClientService getClientService() {
-        return clientService;
-    }
-
-    public UserService getUserService() {
-        return userService;
-    }
     public static ComponentFactory getInstance() {
         return instance;
     }

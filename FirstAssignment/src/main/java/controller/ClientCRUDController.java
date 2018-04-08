@@ -63,15 +63,16 @@ public class ClientCRUDController extends TableBasedController<Client> {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Notification<Boolean> clientNotification=clientService.save(clientView.getTxtName(),clientView.getTxtCnp(),clientView.getTxtCardId(),clientView.getTxtAddress());
+            Notification<Client> clientNotification=clientService.save(clientView.getTxtName(),clientView.getTxtCnp(),clientView.getTxtCardId(),clientView.getTxtAddress());
             if (clientNotification.hasErrors()) {
                 JOptionPane.showMessageDialog(clientView.getContentPane(), clientNotification.getFormattedErrors());
             } else {
-                if (!clientNotification.getResult()) {
+                if (clientNotification.getResult()==null) {
                     JOptionPane.showMessageDialog(clientView.getContentPane(), "Adding the client not successful, please try again later.");
                 } else {
                     JOptionPane.showMessageDialog(clientView.getContentPane(), "Adding successful!");
                     populateClientTable(clientService.findAll());
+                    logActivity("Create client",activeUserId,convertToSqlDate(new Date()),clientNotification.getResult().getId(),null);
                 }
             }
         }
@@ -82,20 +83,25 @@ public class ClientCRUDController extends TableBasedController<Client> {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Long clientId=clientView.getSelectedClientId();
-
-            Notification<Boolean> clientNotification=clientService.update(clientId,clientView.getTxtName(),clientView.getTxtCnp(),clientView.getTxtCardId(),clientView.getTxtAddress());
-            if (clientNotification.hasErrors()) {
-                JOptionPane.showMessageDialog(clientView.getContentPane(), clientNotification.getFormattedErrors());
-            } else {
-                if (!clientNotification.getResult()) {
-                    JOptionPane.showMessageDialog(clientView.getContentPane(), "Updating the client not successful, please try again later.");
+            Long clientId;
+            try
+            {
+                clientId=clientView.getSelectedClientId();
+                Notification<Boolean> clientNotification=clientService.update(clientId,clientView.getTxtName(),clientView.getTxtCnp(),clientView.getTxtCardId(),clientView.getTxtAddress());
+                if (clientNotification.hasErrors()) {
+                    JOptionPane.showMessageDialog(clientView.getContentPane(), clientNotification.getFormattedErrors());
                 } else {
-                    JOptionPane.showMessageDialog(clientView.getContentPane(), "Updating successful!");
-                    populateClientTable(clientService.findAll());
-                    logActivity("Update Client",activeUserId,convertToSqlDate(new Date()),clientId,null);
+                    if (!clientNotification.getResult()) {
+                        JOptionPane.showMessageDialog(clientView.getContentPane(), "Updating the client not successful, please try again later.");
+                    } else {
+                        JOptionPane.showMessageDialog(clientView.getContentPane(), "Updating successful!");
+                        populateClientTable(clientService.findAll());
+                        logActivity("Update Client", activeUserId, convertToSqlDate(new Date()), clientId, null);
 
+                    }
                 }
+            }catch (IndexOutOfBoundsException ie) {
+                JOptionPane.showMessageDialog(clientView.getContentPane(), "No row selected!");
             }
         }
     }

@@ -88,8 +88,8 @@ public class SQLTableCreationFactory {
                         "  cl_id INT NULL,"+
                         "  acc_id INT NULL,"+
                         "  PRIMARY KEY (id)," +
-                        "  UNIQUE INDEX id_UNIQUE (id ASC)," +
-                        "  CONSTRAINT cl_id" +
+                        "  UNIQUE INDEX id_UNIQUE (id ASC))";
+                       /* "  CONSTRAINT cl_id" +
                         "    FOREIGN KEY (cl_id)" +
                         "    REFERENCES `client` (id)" +
                         "    ON DELETE CASCADE" +
@@ -103,7 +103,7 @@ public class SQLTableCreationFactory {
                         "    FOREIGN KEY (acc_id)" +
                         "    REFERENCES `account` (id)" +
                         "    ON DELETE CASCADE" +
-                        "    ON UPDATE CASCADE);";
+                        "    ON UPDATE CASCADE);";*/
             case USER_ROLE:
                 return "\tCREATE TABLE IF NOT EXISTS user_role (" +
                         "  id INT NOT NULL AUTO_INCREMENT," +

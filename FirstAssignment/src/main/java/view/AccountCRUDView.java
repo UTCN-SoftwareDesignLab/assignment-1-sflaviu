@@ -18,7 +18,7 @@ public class AccountCRUDView extends JFrame {
 	private JTable tableAccounts;
 
 	private JButton btnUpdateAccount;
-    private JButton btnDisplayOwner;
+   // private JButton btnDisplayOwner;
     private JButton btnDeleteAccount;
     private JButton btnAddAccount;
 
@@ -59,9 +59,10 @@ public class AccountCRUDView extends JFrame {
 		btnUpdateAccount.setBounds(438, 306, 158, 22);
 		contentPane.add(btnUpdateAccount);
 
+		/*
 		btnDisplayOwner = new JButton("Display Owner");
         btnDisplayOwner .setBounds(438, 40, 158, 23);
-		contentPane.add(btnDisplayOwner );
+		contentPane.add(btnDisplayOwner );*/
 
 		btnDeleteAccount = new JButton("Delete Account");
 		btnDeleteAccount.setBounds(438, 272, 158, 23);
@@ -116,9 +117,6 @@ public class AccountCRUDView extends JFrame {
     }
     public void setBtnAddAccountListener(ActionListener al) {
         btnAddAccount.addActionListener(al);
-    }
-    public void setBtnDisplayOwnerListener(ActionListener al) {
-        btnDisplayOwner.addActionListener(al);
     }
 
     public int getSelectedAccount()

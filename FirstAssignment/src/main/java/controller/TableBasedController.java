@@ -50,7 +50,9 @@ abstract class TableBasedController<T> implements Controller{
             }
             row++;
         }
-        return new JTable(tableData, firstRow.toArray());
+        JTable table= new JTable(tableData, firstRow.toArray());
+        table.setDefaultEditor(Object.class, null);
+        return table;
     }
 
     void logActivity(String type, Long userId, Date date,Long clientId,Long accountId)

@@ -106,18 +106,17 @@ public class AccountCRUDController extends TableBasedController<Account> {
                     pe.printStackTrace();
                 }
 
-                Notification<Boolean> accountNotification =accountService.save(accountView.getTxtType(), Integer.parseInt(accountView.getTxtBalance()),accountView.getTxtClientCnp(),convertToSqlDate(date));
+                Notification<Account> accountNotification =accountService.save(accountView.getTxtType(), Integer.parseInt(accountView.getTxtBalance()),accountView.getTxtClientCnp(),convertToSqlDate(date));
 
                 if (accountNotification.hasErrors()) {
                     JOptionPane.showMessageDialog(accountView.getContentPane(), accountNotification.getFormattedErrors());
                 } else {
-                    if (!accountNotification.getResult()) {
+                    if (accountNotification.getResult()==null) {
                         JOptionPane.showMessageDialog(accountView.getContentPane(), "Adding the account was not successful, please try again later.");
                     } else {
                         JOptionPane.showMessageDialog(accountView.getContentPane(), "Adding successful!");
                         populateAccountTable(accountService.findAll());
-
-                       // logActivity("Create account",activeUserId,new Date(),accountNotification.getResult());
+                        logActivity("Create account",activeUserId,convertToSqlDate(new Date()),null,accountNotification.getResult().getId());
                     }
                 }
             }
@@ -196,8 +195,10 @@ public class AccountCRUDController extends TableBasedController<Account> {
         if(accounts.size()>0) {
             JTable accountsTable = populateTable(accounts);
             accountsTable.getSelectionModel().addListSelectionListener(new AccountListSelectionListener());
-
             accountView.setAccountsTable(accountsTable);
+
         }
+        else
+            accountView.setAccountsTable(new JTable());
     }
 }

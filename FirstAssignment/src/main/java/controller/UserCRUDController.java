@@ -56,13 +56,19 @@ public class UserCRUDController extends TableBasedController<User> {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            Long userId=userView.getSelectedUserId();
 
-            if(!userService.remove(userId))
-                JOptionPane.showMessageDialog(userView.getContentPane(), "Deleting the user failed! Please try again later");
-            else {
-                JOptionPane.showMessageDialog(userView.getContentPane(), "Delete succesfull");
+            try {
+                Long userId = userView.getSelectedUserId();
 
+                if (!userService.remove(userId))
+                    JOptionPane.showMessageDialog(userView.getContentPane(), "Deleting the user failed! Please try again later");
+                else {
+                    JOptionPane.showMessageDialog(userView.getContentPane(), "Delete successful");
+
+                }
+            }catch(IndexOutOfBoundsException ex)
+            {
+                JOptionPane.showMessageDialog(userView.getContentPane(), "No row selected!");
             }
         }
     }
@@ -89,19 +95,24 @@ public class UserCRUDController extends TableBasedController<User> {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Long userId=userView.getSelectedUserId();
-            Notification<Boolean> userNotification=userService.update(userId,userView.getTxtUsername(),userView.getTxtPassword());
-            if (userNotification.hasErrors()) {
-                JOptionPane.showMessageDialog(userView.getContentPane(), userNotification.getFormattedErrors());
-            } else {
-                if (!userNotification.getResult()) {
-                    JOptionPane.showMessageDialog(userView.getContentPane(), "Updating the user not successful, please try again later.");
+            try {
+                Long userId = userView.getSelectedUserId();
+                Notification<Boolean> userNotification = userService.update(userId, userView.getTxtUsername(), userView.getTxtPassword());
+                if (userNotification.hasErrors()) {
+                    JOptionPane.showMessageDialog(userView.getContentPane(), userNotification.getFormattedErrors());
                 } else {
-                    JOptionPane.showMessageDialog(userView.getContentPane(), "Updating successful!");
-                    populateUsersTable(userService.findAll());
-                    logActivity("Updated user ",activeUserId,convertToSqlDate(new Date()),null,userId);
+                    if (!userNotification.getResult()) {
+                        JOptionPane.showMessageDialog(userView.getContentPane(), "Updating the user not successful, please try again later.");
+                    } else {
+                        JOptionPane.showMessageDialog(userView.getContentPane(), "Updating successful!");
+                        populateUsersTable(userService.findAll());
+                        logActivity("Updated user ", activeUserId, convertToSqlDate(new Date()), null, userId);
 
+                    }
                 }
+            }catch(IndexOutOfBoundsException ex)
+            {
+                JOptionPane.showMessageDialog(userView.getContentPane(), "No row selected!");
             }
         }
     }

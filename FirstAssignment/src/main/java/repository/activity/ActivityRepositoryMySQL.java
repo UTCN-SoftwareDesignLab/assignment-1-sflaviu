@@ -18,11 +18,9 @@ import static database.Constants.Tables.ACTIVITY;
 public class ActivityRepositoryMySQL implements ActivityRepository {
 
     private final Connection connection;
-    private final UserRepository userRepository;
 
-    public ActivityRepositoryMySQL(Connection connection,UserRepository userRepository) {
+    public ActivityRepositoryMySQL(Connection connection) {
         this.connection = connection;
-        this.userRepository=userRepository;
 
     }
 

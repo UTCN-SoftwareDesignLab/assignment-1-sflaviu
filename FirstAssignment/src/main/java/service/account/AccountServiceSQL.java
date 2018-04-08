@@ -19,17 +19,30 @@ import service.user.UserService;
 import java.sql.Date;
 import java.util.List;
 
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceSQL implements AccountService {
 
     private final AccountRepository accountRepository;
 
     private final ClientService clientService;
 
-    public AccountServiceImpl(AccountRepository accountRepository, ClientService clientService) {
+    public AccountServiceSQL(AccountRepository accountRepository, ClientService clientService) {
         this.accountRepository = accountRepository;
         this.clientService=clientService;
     }
 
+    @Override
+    public Notification<Account> findById(Long id)
+    {
+        Notification<Account> notification=new Notification<>();
+        try {
+            notification.setResult(accountRepository.findById(id));
+            return notification;
+        }catch(EntityNotFoundException e)
+        {
+            notification.addError(e.getMessage());
+            return notification;
+        }
+    }
     @Override
     public List<Account> findAll() {
         return accountRepository.findAll();
@@ -37,28 +50,25 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public Notification<Boolean> save(String type, Integer balance, String clientCNP, Date creation) {
+    public Notification<Account> save(String type, Integer balance, String clientCNP, Date creation) {
 
         Account account=new AccountBuilder().setType(type).setBalance(balance).setCreation(creation).build();
         Validator accountValidator=new AccountValidator(account);
 
-
-        Notification<Boolean> accountAddingNotification=new Notification<>();
+        Notification<Account> accountAddingNotification=new Notification<>();
 
         Notification<Client> clientFindNotification= findOwner(clientCNP);
 
         if(clientFindNotification.hasErrors()) {
             accountValidator.getErrors().forEach(accountAddingNotification::addError);
-            accountAddingNotification.setResult(Boolean.FALSE);
             return accountAddingNotification;
         }
         boolean accountValid = accountValidator.validate();
 
         if (!accountValid) {
             accountValidator.getErrors().forEach(accountAddingNotification::addError);
-            accountAddingNotification.setResult(Boolean.FALSE);
         } else {
-            accountAddingNotification.setResult(accountRepository.save(account,clientFindNotification.getResult().getId()));
+            accountAddingNotification.setResult(accountRepository.save(account,clientFindNotification.getResult().getId()).getResult());
         }
         return accountAddingNotification;
     }

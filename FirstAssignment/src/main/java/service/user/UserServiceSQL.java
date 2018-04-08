@@ -12,13 +12,13 @@ import repository.user.UserRepository;
 
 import java.util.List;
 
-public class UserServiceImpl implements UserService {
+public class UserServiceSQL implements UserService {
 
     private UserRepository userRepository;
     private RightsRolesRepository rightsRolesRepository;
     private AuthenticationService authenticationService;
 
-    public UserServiceImpl(UserRepository userRepository,RightsRolesRepository rightsRolesRepository,AuthenticationService authenticationService) {
+    public UserServiceSQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
         this.rightsRolesRepository=rightsRolesRepository;
         this.authenticationService=authenticationService;
@@ -55,5 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean remove(Long id) {
         return userRepository.remove(id);
+    }
+
+    @Override
+    public void removeAll()
+    {
+        userRepository.removeAll();
     }
 }

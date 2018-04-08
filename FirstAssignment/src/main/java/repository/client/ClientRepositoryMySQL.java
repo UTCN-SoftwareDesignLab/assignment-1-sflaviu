@@ -15,12 +15,10 @@ import static database.Constants.Tables.CLIENT;
 public class ClientRepositoryMySQL implements ClientRepository {
 
     private final Connection connection;
-    private final AccountRepository accountRepository;
 
 
-    public ClientRepositoryMySQL(Connection connection, AccountRepository accountRepository) {
+    public ClientRepositoryMySQL(Connection connection) {
         this.connection = connection;
-        this.accountRepository=accountRepository;
     }
 
     @Override
@@ -100,7 +98,8 @@ public class ClientRepositoryMySQL implements ClientRepository {
 
 
     @Override
-    public boolean save(Client client) {
+    public Notification<Client> save(Client client) {
+        Notification<Client> notificationSaveClient=new Notification<>();
         try {
             PreparedStatement insertClientStatement = connection
                     .prepareStatement("INSERT INTO client values (null, ?, ?, ?, ?)");
@@ -115,10 +114,12 @@ public class ClientRepositoryMySQL implements ClientRepository {
             long clientId = rs.getLong(1);
             client.setId(clientId);
 
-            return true;
+            notificationSaveClient.setResult(client);
+            return notificationSaveClient;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            notificationSaveClient.addError("Saving account not succesfull");
+            return notificationSaveClient;
         }
 
     }
@@ -165,7 +166,7 @@ public class ClientRepositoryMySQL implements ClientRepository {
     public void removeAll() {
         try {
             Statement statement = connection.createStatement();
-            String sql = "DELETE from " + CLIENT +"where id >= 0";
+            String sql = "DELETE from " + CLIENT;
             statement.executeUpdate(sql);
 
         } catch (SQLException e) {
@@ -181,7 +182,6 @@ public class ClientRepositoryMySQL implements ClientRepository {
                 .setAddress(clientResultSet.getString("address"))
                 .setCardNr(clientResultSet.getString("card_nr"))
                 .setCnp(clientResultSet.getString("cnp"))
-                .setAccounts(accountRepository.findAccountsByOwnerId(clientResultSet.getLong("id")))
                 .build();
         return client;
     }

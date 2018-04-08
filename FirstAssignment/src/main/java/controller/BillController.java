@@ -98,7 +98,7 @@ public class BillController extends TableBasedController{
                         JOptionPane.showMessageDialog(billView.getContentPane(), "Unable to pay bill, please try again later.");
                     } else {
                         paymentComplete();
-                        populateAccountsTables(accountService.findAll());
+                        populateAccountsTables(accountService.findClientsAccounts(clientId));
                         logActivity("Payed "+billView.getSelectedBill()+" bill",activeUserId,convertToSqlDate(new Date()),clientId,accountId);
 
                     }

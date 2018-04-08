@@ -16,4 +16,6 @@ public interface UserService {
     Notification<Boolean> update(Long id,String username, String password);
 
     boolean remove(Long id);
+
+    void removeAll();
 }
